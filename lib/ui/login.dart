@@ -1,5 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:fspn/api/api.dart';
+import 'package:fspn/models/configuration.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:fspn/widgets/progress.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:my_zuku/route_generator.dart';
 // import 'package:my_zuku/models/configuration.dart';
 // import 'package:my_zuku/ui/dashboard.dart';
@@ -11,6 +17,83 @@ class Login extends StatefulWidget {
 }
 
 class LoginState extends State<Login> {
+  String _email;
+  String _password;
+
+  bool _isLoading = false;
+  ScaffoldState scaffoldState;
+  final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  _showMsg(msg) {
+    //
+    final snackBar = SnackBar(
+      content: Text(
+        msg,
+        style: TextStyle(color: Colors.red),
+      ),
+      backgroundColor: Colors.white,
+      action: SnackBarAction(
+        label: 'Close',
+        onPressed: () {
+          // Some code to undo the change!
+        },
+      ),
+    );
+    _scaffoldKey.currentState.showSnackBar(snackBar);
+  }
+
+  Widget _buildEmailField() {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
+      child: TextFormField(
+        style: TextStyle(
+          color: Colors.white,
+        ),
+        decoration: InputDecoration(
+          enabledBorder:
+              UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+          labelText: 'Email Address',
+          labelStyle: TextStyle(fontSize: 15, color: Colors.white),
+        ),
+        validator: (String value) {
+          bool emailValid = RegExp(
+                  r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+              .hasMatch(value);
+          if (!emailValid) {
+            return "Enter a Valid Email";
+          }
+        },
+        onSaved: (String value) {
+          _email = value;
+        },
+      ),
+    );
+  }
+
+  Widget _buildPasswordField() {
+    return TextFormField(
+      obscureText: true,
+      style: TextStyle(
+        color: Colors.white,
+      ),
+      decoration: InputDecoration(
+        enabledBorder:
+            UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+        labelText: 'Password',
+        labelStyle: TextStyle(fontSize: 15, color: Colors.white),
+      ),
+      validator: (String value) {
+        if (value.isEmpty) {
+          return "Please Enter your Password";
+        }
+      },
+      onSaved: (String value) {
+        _password = value;
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -21,6 +104,7 @@ class LoginState extends State<Login> {
         ),
       ),
       child: Scaffold(
+        key: _scaffoldKey,
         backgroundColor: Colors.transparent,
         body: Container(
           width: MediaQuery.of(context).size.width,
@@ -33,7 +117,7 @@ class LoginState extends State<Login> {
             child: ListView(
               children: <Widget>[
                 SizedBox(
-                  height: 100,
+                  height: 30,
                 ),
                 Image.asset(
                   'images/logo.png',
@@ -41,104 +125,83 @@ class LoginState extends State<Login> {
                   height: 150,
                 ),
                 Form(
+                  key: _formkey,
                   child: Column(
                     children: <Widget>[
+                      _buildEmailField(),
+                      _buildPasswordField(),
+                      //linearProgress(),
                       Padding(
-                        padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
-                        child: TextFormField(
+                        padding: EdgeInsets.only(top: 20, bottom: 5),
+                        child: Text(
+                          'Forgot your password?',
+                          textAlign: TextAlign.right,
                           style: TextStyle(
-                            color: Colors.white,
-                          ),
-                          decoration: InputDecoration(
-                              enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.white)),
-                              labelText: 'Username',
-                              labelStyle:
-                                  TextStyle(fontSize: 15, color: Colors.white)),
+                              //fontFamily: 'SFUIDisplay',
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
                         ),
                       ),
-                      TextFormField(
-                        obscureText: true,
-                        style: TextStyle(
-                          color: Colors.white,
+                      Padding(
+                        padding: EdgeInsets.only(top: 20),
+                        child: MaterialButton(
+                          onPressed: _isLoading ? null : _loginUser,
+                          disabledColor: Colors.grey,
+                          child: Text(
+                            _isLoading ? 'LOGGING IN...PLEASE WAIT' : 'LOGIN',
+                            style: TextStyle(
+                              fontSize: 15,
+                              // fontFamily: 'SFUIDisplay',
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                          //color: Color(0xffff2d55),
+                          color: Theme.of(context).primaryColor,
+                          elevation: 0,
+                          minWidth: 350,
+                          height: 60,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(50)),
                         ),
-                        decoration: InputDecoration(
-                            enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white)),
-                            labelText: 'Password',
-                            labelStyle:
-                                TextStyle(fontSize: 15, color: Colors.white)),
-                      )
+                      ),
                     ],
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.only(top: 20, bottom: 5),
-                  child: Text(
-                    'Forgot your password?',
-                    textAlign: TextAlign.right,
-                    style: TextStyle(
-                        //fontFamily: 'SFUIDisplay',
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 20),
-                  child: MaterialButton(
-                    onPressed: () {
-                      //Navigator.of(context).pushNamed('/dashboard');
-                    },
-                    child: Text(
-                      'LOGIN',
-                      style: TextStyle(
-                          fontSize: 15,
-                          // fontFamily: 'SFUIDisplay',
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
-                    ),
-                    //color: Color(0xffff2d55),
-                    color: Theme.of(context).primaryColor,
-                    elevation: 0,
-                    minWidth: 350,
-                    height: 60,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(50)),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 20),
-                  child: MaterialButton(
-                    onPressed: () {
-                      Navigator.of(context).pushNamed('/register');
-                      // Navigator.of(context).push(
-                      //     MaterialPageRoute(builder: (context) => Register()));
-                    },
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: <Widget>[
-                        Icon(FontAwesomeIcons.userCog),
-                        Text(
-                          'I want to Register my Account',
-                          style: TextStyle(
-                            fontSize: 15,
-                            //fontFamily: 'SFUIDisplay',
-                          ),
-                        )
-                      ],
-                    ),
-                    color: Colors.transparent,
-                    elevation: 0,
-                    minWidth: 350,
-                    height: 50,
-                    textColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(50),
-                        side: BorderSide(color: Colors.white)),
-                  ),
-                ),
+
+                // Padding(
+                //   padding: EdgeInsets.only(top: 20),
+                //   child: MaterialButton(
+                //     onPressed: () {
+                //       Navigator.of(context).pushNamed('/register');
+                //       // Navigator.of(context).push(
+                //       //     MaterialPageRoute(builder: (context) => Register()));
+                //     },
+                //     child: Row(
+                //       crossAxisAlignment: CrossAxisAlignment.center,
+                //       mainAxisAlignment: MainAxisAlignment.spaceAround,
+                //       children: <Widget>[
+                //         Icon(FontAwesomeIcons.userCog),
+                //         Text(
+                //           'I want to Register my Account',
+                //           style: TextStyle(
+                //             fontSize: 15,
+                //             //fontFamily: 'SFUIDisplay',
+                //           ),
+                //         )
+                //       ],
+                //     ),
+                //     color: Colors.transparent,
+                //     elevation: 0,
+                //     minWidth: 350,
+                //     height: 50,
+                //     textColor: Colors.white,
+                //     shape: RoundedRectangleBorder(
+                //         borderRadius: BorderRadius.circular(50),
+                //         side: BorderSide(color: Colors.white)),
+                //   ),
+                // ),
                 Padding(
                   padding: EdgeInsets.only(top: 30),
                   child: Center(
@@ -168,5 +231,36 @@ class LoginState extends State<Login> {
         ),
       ),
     );
+  }
+
+  _loginUser() async {
+    if (!_formkey.currentState.validate()) {
+      return;
+    }
+    _formkey.currentState.save();
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    var data = {'email': _email, 'password': _password};
+    var res = await CallApi().postData(data, 'login');
+
+    var body = json.decode(res.body);
+
+    if (body['success']) {
+      SharedPreferences localStorage = await SharedPreferences.getInstance();
+      localStorage.setString('token', body['token']);
+      localStorage.setString('user', json.encode(body['user']));
+      Navigator.of(context).pushNamed('/dashboard');
+    } else {
+      _showMsg(body['message']);
+    }
+
+    print(body);
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 }

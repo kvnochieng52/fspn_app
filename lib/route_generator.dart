@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:fspn/homePage.dart';
 import 'package:fspn/ui/login.dart';
+
+import 'mainPage.dart';
 // import 'package:my_zuku/ui/register.dart';
 // import 'package:my_zuku/ui/Dashboard.dart';
 
@@ -11,11 +14,11 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => Login());
         break;
 
-      case '/register':
-        //return MaterialPageRoute(builder: (_) => Register());
+      case '/dashboard':
+        return MaterialPageRoute(builder: (_) => MainPage());
         break;
 
-      case '/dashboard':
+      case '/dashboard2':
         //return MaterialPageRoute(builder: (_) => Dashboard());
         break;
       // case '/second':
