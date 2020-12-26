@@ -2,14 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:fspn/api/api.dart';
-import 'package:fspn/models/configuration.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:fspn/widgets/progress.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:my_zuku/route_generator.dart';
-// import 'package:my_zuku/models/configuration.dart';
-// import 'package:my_zuku/ui/dashboard.dart';
-// import 'package:my_zuku/ui/register.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -26,7 +19,6 @@ class LoginState extends State<Login> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   _showMsg(msg) {
-    //
     final snackBar = SnackBar(
       content: Text(
         msg,
@@ -147,7 +139,7 @@ class LoginState extends State<Login> {
                         padding: EdgeInsets.only(top: 20),
                         child: MaterialButton(
                           onPressed: _isLoading ? null : _loginUser,
-                          disabledColor: Colors.grey,
+                          disabledColor: Colors.lightGreen,
                           child: Text(
                             _isLoading ? 'LOGGING IN...PLEASE WAIT' : 'LOGIN',
                             style: TextStyle(
@@ -169,39 +161,6 @@ class LoginState extends State<Login> {
                     ],
                   ),
                 ),
-
-                // Padding(
-                //   padding: EdgeInsets.only(top: 20),
-                //   child: MaterialButton(
-                //     onPressed: () {
-                //       Navigator.of(context).pushNamed('/register');
-                //       // Navigator.of(context).push(
-                //       //     MaterialPageRoute(builder: (context) => Register()));
-                //     },
-                //     child: Row(
-                //       crossAxisAlignment: CrossAxisAlignment.center,
-                //       mainAxisAlignment: MainAxisAlignment.spaceAround,
-                //       children: <Widget>[
-                //         Icon(FontAwesomeIcons.userCog),
-                //         Text(
-                //           'I want to Register my Account',
-                //           style: TextStyle(
-                //             fontSize: 15,
-                //             //fontFamily: 'SFUIDisplay',
-                //           ),
-                //         )
-                //       ],
-                //     ),
-                //     color: Colors.transparent,
-                //     elevation: 0,
-                //     minWidth: 350,
-                //     height: 50,
-                //     textColor: Colors.white,
-                //     shape: RoundedRectangleBorder(
-                //         borderRadius: BorderRadius.circular(50),
-                //         side: BorderSide(color: Colors.white)),
-                //   ),
-                // ),
                 Padding(
                   padding: EdgeInsets.only(top: 30),
                   child: Center(

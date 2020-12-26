@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:fspn/homePage.dart';
+//import 'package:fspn/homePage.dart';
 import 'package:fspn/ui/login.dart';
+import 'package:fspn/ui/dashboard/dashboardPage.dart';
 
-import 'mainPage.dart';
+///import 'mainPage.dart';
 // import 'package:my_zuku/ui/register.dart';
 // import 'package:my_zuku/ui/Dashboard.dart';
 
@@ -15,7 +16,7 @@ class RouteGenerator {
         break;
 
       case '/dashboard':
-        return MaterialPageRoute(builder: (_) => MainPage());
+        return MaterialPageRoute(builder: (_) => DashboardPage());
         break;
 
       case '/dashboard2':
