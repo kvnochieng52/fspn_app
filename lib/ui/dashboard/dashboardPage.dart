@@ -111,10 +111,10 @@ class _DashboardState extends State<DashboardPage> {
                 Padding(
                   padding: EdgeInsets.only(top: 8.0),
                   child: Text(
-                    options[index][0],
+                    options[index][0].toUpperCase(),
                     style: TextStyle(
                         fontSize: 10,
-                        fontFamily: "Montserrat",
+                        fontFamily: 'Montserrat',
                         height: 1.2,
                         fontWeight: FontWeight.w600),
                     textAlign: TextAlign.center,

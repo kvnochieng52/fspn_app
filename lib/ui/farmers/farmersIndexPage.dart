@@ -19,7 +19,7 @@ class _FarmersIndexState extends State<FarmersIndexPage> {
       body: Text("Farmers"),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: () => print('hello'),
+        onPressed: () => Navigator.of(context).pushNamed('/new_farmer'),
       ),
 
       // floatingActionButton: FloatingActionButton.extended(

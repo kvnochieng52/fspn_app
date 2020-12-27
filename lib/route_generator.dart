@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fspn/ui/farm_inputs/farmInputsIndexPage.dart';
 import 'package:fspn/ui/farmers/farmersIndexPage.dart';
+import 'package:fspn/ui/farmers/newFarmerPage.dart';
 import 'package:fspn/ui/groups/groupsIndexPage.dart';
 import 'package:fspn/ui/login.dart';
 import 'package:fspn/ui/dashboard/dashboardPage.dart';
@@ -22,9 +23,15 @@ class RouteGenerator {
       case '/farmers':
         return MaterialPageRoute(builder: (_) => FarmersIndexPage());
         break;
+
+      case '/new_farmer':
+        return MaterialPageRoute(builder: (_) => NewFarmerPage());
+        break;
+
       case '/groups':
         return MaterialPageRoute(builder: (_) => GroupsIndexPage());
         break;
+
       case '/organizations':
         return MaterialPageRoute(builder: (_) => OrganizationsIndexPage());
         break;
@@ -32,6 +39,7 @@ class RouteGenerator {
       case '/farm_inputs':
         return MaterialPageRoute(builder: (_) => FarmInputsIndexPage());
         break;
+
       case '/profile':
         return MaterialPageRoute(builder: (_) => ProfilePage());
         break;

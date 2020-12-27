@@ -43,13 +43,27 @@ AppBar header(context, {String titleText}) {
       ],
     ),
     elevation: 0.0,
-    actions: <Widget>[
-      IconButton(
+    actions: <Widget>[rightButtons(titleText)],
+  );
+}
+
+Widget rightButtons(titleText) {
+  switch (titleText) {
+    case 'Farmers':
+      return IconButton(
+        icon: Icon(Icons.search),
+        iconSize: 30.0,
+        color: Colors.white,
+        onPressed: () {},
+      );
+      break;
+
+    default:
+      return IconButton(
         icon: Icon(Icons.more_vert),
         iconSize: 30.0,
         color: Colors.white,
         onPressed: () {},
-      ),
-    ],
-  );
+      );
+  }
 }
