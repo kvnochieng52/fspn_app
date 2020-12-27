@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Drawer drawer() {
+Drawer drawer(context) {
   return Drawer(
     child: Container(
       color: Colors.white,
@@ -44,10 +44,41 @@ Drawer drawer() {
               ),
             ),
           ),
-          _customListTyle(Icons.person, 'Profile', () => {}),
-          _customListTyle(Icons.settings, 'Settings', () => {}),
-          _customListTyle(Icons.lock, 'Logout', () => {}),
-          _customListTyle(Icons.notifications, 'Notifications', () => {}),
+          _customListTyle(
+            Icons.dashboard,
+            'Dashboard',
+            () => Navigator.of(context).pushNamed('/dashboard'),
+          ),
+          _customListTyle(
+            Icons.account_circle,
+            'Farmers',
+            () => Navigator.of(context).pushNamed('/farmers'),
+          ),
+          _customListTyle(
+            Icons.supervised_user_circle,
+            'Groups',
+            () => Navigator.of(context).pushNamed('/groups'),
+          ),
+          _customListTyle(
+            Icons.store,
+            'Organizations',
+            () => Navigator.of(context).pushNamed('/organizations'),
+          ),
+          _customListTyle(
+            Icons.notifications,
+            'Farm Inputs',
+            () => Navigator.of(context).pushNamed('/farm_inputs'),
+          ),
+          _customListTyle(
+            Icons.settings,
+            'Profile',
+            () => Navigator.of(context).pushNamed('/profile'),
+          ),
+          _customListTyle(
+            Icons.blur_circular,
+            'Logout',
+            () => Navigator.of(context).pushNamed('/logout'),
+          ),
         ],
       ),
     ),

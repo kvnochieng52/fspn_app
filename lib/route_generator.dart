@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-//import 'package:fspn/homePage.dart';
+import 'package:fspn/ui/farm_inputs/farmInputsIndexPage.dart';
+import 'package:fspn/ui/farmers/farmersIndexPage.dart';
+import 'package:fspn/ui/groups/groupsIndexPage.dart';
 import 'package:fspn/ui/login.dart';
 import 'package:fspn/ui/dashboard/dashboardPage.dart';
-
-///import 'mainPage.dart';
-// import 'package:my_zuku/ui/register.dart';
-// import 'package:my_zuku/ui/Dashboard.dart';
+import 'package:fspn/ui/organizations/organizationsIndexPage.dart';
+import 'package:fspn/ui/profile/ProfilePage.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -19,17 +19,22 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => DashboardPage());
         break;
 
-      case '/dashboard2':
-        //return MaterialPageRoute(builder: (_) => Dashboard());
+      case '/farmers':
+        return MaterialPageRoute(builder: (_) => FarmersIndexPage());
         break;
-      // case '/second':
-      //   if (args is String) {
-      //     return MaterialPageRoute(
-      //         builder: (_) => SecondPage(
-      //               data: args,
-      //             ));
-      //   }
-      //   return _errorRoute();
+      case '/groups':
+        return MaterialPageRoute(builder: (_) => GroupsIndexPage());
+        break;
+      case '/organizations':
+        return MaterialPageRoute(builder: (_) => OrganizationsIndexPage());
+        break;
+
+      case '/farm_inputs':
+        return MaterialPageRoute(builder: (_) => FarmInputsIndexPage());
+        break;
+      case '/profile':
+        return MaterialPageRoute(builder: (_) => ProfilePage());
+        break;
 
       default:
         return _errorRoute();

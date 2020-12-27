@@ -22,17 +22,6 @@ import 'package:flutter/material.dart';
 
 AppBar header(context, {String titleText}) {
   return AppBar(
-    // leading: IconButton(
-    //   icon: Icon(Icons.menu),
-    //   iconSize: 30.0,
-    //   color: Colors.white,
-    //   onPressed: () {},
-    // ),
-
-    // ClipRRect(
-    //   borderRadius: BorderRadius.vertical(top: Radius.circular(4.0)),
-    //   child: Drawer(),
-    // ),
     centerTitle: true,
     title: Row(
       children: <Widget>[
@@ -53,7 +42,6 @@ AppBar header(context, {String titleText}) {
         ),
       ],
     ),
-
     elevation: 0.0,
     actions: <Widget>[
       IconButton(
