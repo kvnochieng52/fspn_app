@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fspn/api/api.dart';
+import 'package:fspn/ui/loading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
@@ -140,7 +141,7 @@ class LoginState extends State<Login> {
                           onPressed: _isLoading ? null : _loginUser,
                           disabledColor: Colors.lightGreen,
                           child: Text(
-                            _isLoading ? 'LOGGING IN...PLEASE WAIT' : 'LOGIN',
+                            'LOGIN',
                             style: TextStyle(
                               fontSize: 15,
                               // fontFamily: 'SFUIDisplay',
@@ -201,6 +202,8 @@ class LoginState extends State<Login> {
       _isLoading = true;
     });
 
+    Loading().loader(context, "Logging in...Please wait");
+
     var data = {'email': _email, 'password': _password};
     var res = await CallApi().postData(data, 'login');
 
@@ -210,12 +213,11 @@ class LoginState extends State<Login> {
       SharedPreferences localStorage = await SharedPreferences.getInstance();
       localStorage.setString('token', body['token']);
       localStorage.setString('user', json.encode(body['user']));
+      Navigator.pop(context);
       Navigator.of(context).pushNamed('/dashboard');
     } else {
       _showMsg(body['message']);
     }
-
-    print(body);
 
     setState(() {
       _isLoading = false;
