@@ -216,6 +216,7 @@ class LoginState extends State<Login> {
       Navigator.pop(context);
       Navigator.of(context).pushNamed('/dashboard');
     } else {
+      Navigator.pop(context);
       _showMsg(body['message']);
     }
 

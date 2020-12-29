@@ -1,8 +1,8 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fspn/api/api.dart';
+import 'package:fspn/ui/farmers/farmerShowPage.dart';
 import 'package:fspn/ui/loading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -177,7 +177,7 @@ class _NewFarmerState extends State<NewFarmerPage> {
         title: Text(
           'New Farmer',
           style: TextStyle(
-            fontSize: 15.0,
+            fontSize: 16.0,
           ),
         ),
       ),
@@ -199,20 +199,21 @@ class _NewFarmerState extends State<NewFarmerPage> {
                         child: Text(
                           "Enter the Farmers Details to Register",
                           style: TextStyle(
-                            fontSize: 14.0,
+                            fontSize: 17.0,
                             fontFamily: 'Montserrat',
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
                     ),
+
                     Row(
                       children: <Widget>[
                         Flexible(
                           child: TextFormField(
                             decoration: InputDecoration(
                               labelText: 'First Name',
-                              labelStyle: TextStyle(fontSize: 15),
+                              labelStyle: TextStyle(fontSize: 16.0),
                               isDense: true,
                               contentPadding: EdgeInsets.all(5),
                             ),
@@ -235,7 +236,7 @@ class _NewFarmerState extends State<NewFarmerPage> {
                           child: TextFormField(
                             decoration: InputDecoration(
                               labelText: 'Last Name',
-                              labelStyle: TextStyle(fontSize: 15),
+                              labelStyle: TextStyle(fontSize: 16.0),
                               isDense: true,
                               contentPadding: EdgeInsets.all(5),
                             ),
@@ -258,7 +259,7 @@ class _NewFarmerState extends State<NewFarmerPage> {
                           child: TextFormField(
                             decoration: InputDecoration(
                               labelText: 'ID/Passport No',
-                              labelStyle: TextStyle(fontSize: 15),
+                              labelStyle: TextStyle(fontSize: 16.0),
                               isDense: true,
                               contentPadding: EdgeInsets.all(5),
                             ),
@@ -281,7 +282,7 @@ class _NewFarmerState extends State<NewFarmerPage> {
                           child: TextFormField(
                             decoration: InputDecoration(
                               labelText: 'Email',
-                              labelStyle: TextStyle(fontSize: 15),
+                              labelStyle: TextStyle(fontSize: 16.0),
                               isDense: true,
                               contentPadding: EdgeInsets.all(5),
                             ),
@@ -307,7 +308,7 @@ class _NewFarmerState extends State<NewFarmerPage> {
                           child: TextFormField(
                             decoration: InputDecoration(
                               labelText: 'Phone No.',
-                              labelStyle: TextStyle(fontSize: 15),
+                              labelStyle: TextStyle(fontSize: 16.0),
                               isDense: true,
                               contentPadding: EdgeInsets.all(5),
                             ),
@@ -331,7 +332,7 @@ class _NewFarmerState extends State<NewFarmerPage> {
                           child: TextFormField(
                             decoration: InputDecoration(
                               labelText: 'Alternate Phone No.',
-                              labelStyle: TextStyle(fontSize: 15),
+                              labelStyle: TextStyle(fontSize: 16.0),
                               isDense: true,
                               contentPadding: EdgeInsets.all(5),
                             ),
@@ -447,7 +448,7 @@ class _NewFarmerState extends State<NewFarmerPage> {
                               // border: OutlineInputBorder(
                               //     borderSide: new BorderSide(color: Colors.teal)),
                               labelText: 'Address',
-                              labelStyle: TextStyle(fontSize: 15),
+                              labelStyle: TextStyle(fontSize: 16.0),
                               isDense: true,
                               contentPadding: EdgeInsets.all(5),
                             ),
@@ -573,7 +574,7 @@ class _NewFarmerState extends State<NewFarmerPage> {
                               // border: OutlineInputBorder(
                               //     borderSide: new BorderSide(color: Colors.teal)),
                               labelText: 'Total Land Size in Acres',
-                              labelStyle: TextStyle(fontSize: 15),
+                              labelStyle: TextStyle(fontSize: 16.0),
                               isDense: true,
                               contentPadding: EdgeInsets.all(5),
                             ),
@@ -598,7 +599,7 @@ class _NewFarmerState extends State<NewFarmerPage> {
                         child: Text(
                           'SUBMIT',
                           style: TextStyle(
-                            fontSize: 15,
+                            fontSize: 16.0,
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                           ),
@@ -614,14 +615,14 @@ class _NewFarmerState extends State<NewFarmerPage> {
                       ),
                     ),
                     //   "Enter the Farmers Details",
-                    //   style: TextStyle(fontSize: 15.0),
+                    //   style: TextStyle(fontSize: 16.0.0),
                     // ),
                     // Row(
                     //   children: <Widget>[
                     //     TextFormField(
                     //       decoration: InputDecoration(
                     //         labelText: 'First Name',
-                    //         labelStyle: TextStyle(fontSize: 15),
+                    //         labelStyle: TextStyle(fontSize: 16.0),
                     //       ),
                     //     ),
                     //   ],

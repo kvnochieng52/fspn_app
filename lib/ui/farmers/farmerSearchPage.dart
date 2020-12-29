@@ -1,27 +1,45 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:fspn/api/api.dart';
-import 'package:fspn/widgets/drawer.dart';
-import 'package:fspn/widgets/header.dart';
-import 'package:fspn/widgets/progress.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class FarmersIndexPage extends StatefulWidget {
+class FarmerSearchPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _FarmersIndexState();
+    return _FarmerSearchState();
   }
 }
 
-class _FarmersIndexState extends State<FarmersIndexPage> {
-  List farmers = List();
-  bool farmersFetched = false;
+class _FarmerSearchState extends State<FarmerSearchPage> {
+  bool _searchFlag = false;
+  TextEditingController searchController = TextEditingController();
 
   @override
-  void initState() {
-    super.initState();
-    _getFarmers();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: buildSearchField(),
+      body: _searchFlag ? _buildFarmersList() : buildNoContent(),
+    );
   }
+
+  _clearSearch() {
+    setState(() {
+      searchController.clear();
+      _searchFlag = false;
+    });
+  }
+
+  handleSearch(text) {
+    _getFarmers();
+    setState(() {
+      _searchFlag = true;
+    });
+
+    //print(searchResults.length);
+  }
+
+  var farmers = List();
 
   _getFarmers() async {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
@@ -32,30 +50,7 @@ class _FarmersIndexState extends State<FarmersIndexPage> {
 
     setState(() {
       farmers = json.decode(res.body);
-      farmersFetched = true;
     });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: header(context, titleText: 'Farmers'),
-      drawer: drawer(context),
-      backgroundColor: Color(0xFFF0F0F0),
-      body: Container(
-        child: farmersFetched ? _buildFarmersList() : circularProgress(),
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () => Navigator.of(context).pushNamed('/new_farmer'),
-      ),
-
-      // floatingActionButton: FloatingActionButton.extended(
-      //   icon: Icon(Icons.add),
-      //   label: Text("New Farmer"),
-      //   onPressed: () => print('hello'),
-      // ),
-    );
   }
 
   Widget _buildFarmersList() {
@@ -112,47 +107,55 @@ class _FarmersIndexState extends State<FarmersIndexPage> {
     );
   }
 
-  Widget _buildTopStrip() {
+  Container buildNoContent() {
+    final Orientation orientation = MediaQuery.of(context).orientation;
     return Container(
-      color: Colors.black,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Center(
+        child: ListView(
           children: <Widget>[
-            Row(
-              children: <Widget>[
-                Icon(
-                  Icons.account_circle,
-                  color: Colors.white,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    "Total Registered Farmers",
-                    style: TextStyle(
-                      fontSize: 15.0,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
+            Image.asset(
+              'images/logo_colored.png',
+              height: orientation == Orientation.portrait ? 250 : 100.0,
+              width: orientation == Orientation.portrait ? 250 : 100.0,
             ),
-            CircleAvatar(
-              backgroundColor: Colors.blue,
-              radius: 14.0,
-              child: Text(
-                farmers.length.toString(),
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  fontSize: 13.0,
-                ),
+            Text(
+              "Find Farmers",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.green,
+                //fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w600,
+                fontSize: orientation == Orientation.portrait ? 20.0 : 20.0,
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  AppBar buildSearchField() {
+    return AppBar(
+      backgroundColor: Theme.of(context).primaryColor,
+      title: TextFormField(
+        autofocus: true,
+        style: TextStyle(color: Colors.black, fontSize: 16.0),
+        controller: searchController,
+        decoration: InputDecoration(
+          hintText: "Search for Farmer...",
+          fillColor: Colors.white,
+          filled: true,
+          prefixIcon: Icon(
+            Icons.account_circle,
+            size: 24.0,
+          ),
+          suffixIcon: IconButton(
+            icon: Icon(Icons.clear),
+            onPressed: _clearSearch,
+          ),
+        ),
+        onFieldSubmitted: handleSearch,
+        onChanged: (text) => handleSearch(text),
       ),
     );
   }

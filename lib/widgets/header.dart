@@ -43,18 +43,20 @@ AppBar header(context, {String titleText}) {
       ],
     ),
     elevation: 0.0,
-    actions: <Widget>[rightButtons(titleText)],
+    actions: <Widget>[rightButtons(context, titleText)],
   );
 }
 
-Widget rightButtons(titleText) {
+Widget rightButtons(context, titleText) {
   switch (titleText) {
     case 'Farmers':
       return IconButton(
         icon: Icon(Icons.search),
         iconSize: 30.0,
         color: Colors.white,
-        onPressed: () {},
+        onPressed: () {
+          Navigator.of(context).pushNamed('/search_farmer');
+        },
       );
       break;
 
