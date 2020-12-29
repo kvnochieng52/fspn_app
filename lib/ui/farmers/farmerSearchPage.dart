@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:fspn/api/api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -45,8 +44,8 @@ class _FarmerSearchState extends State<FarmerSearchPage> {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     var user = json.decode(localStorage.getString('user'));
 
-    var res =
-        await CallApi().getData('farmer/get_farmers/' + user['id'].toString());
+    var res = await CallApi().getData(
+        "farmer/search_farmers/${user['id'].toString()}/${searchController.text}");
 
     setState(() {
       farmers = json.decode(res.body);
@@ -155,7 +154,11 @@ class _FarmerSearchState extends State<FarmerSearchPage> {
           ),
         ),
         onFieldSubmitted: handleSearch,
-        onChanged: (text) => handleSearch(text),
+        onChanged: (text) {
+          if (text.length >= 3) {
+            handleSearch(text);
+          }
+        },
       ),
     );
   }

@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fspn/api/api.dart';
-import 'package:fspn/ui/farmers/farmerShowPage.dart';
 import 'package:fspn/ui/loading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -21,17 +20,16 @@ class _NewFarmerState extends State<NewFarmerPage> {
   bool livestockcheckedValue = false;
   bool _isLoading = false;
 
-  String _first_name;
-  String _last_name;
-  String _id_number;
+  String _firstname;
+  String _lastname;
+  String _idnumber;
   String _email;
-  String _phone_no;
+  String _phoneno;
   String _phone2;
   String _country;
   String _county;
-  String _sub_county;
+  String _subcounty;
   String _address;
-  String _dob;
   String _landsize;
   String _gender;
 
@@ -73,15 +71,15 @@ class _NewFarmerState extends State<NewFarmerPage> {
     var user = json.decode(localStorage.getString('user'));
 
     var data = {
-      'first_name': _first_name,
-      'last_name': _last_name,
-      'id_passport': _id_number,
+      'first_name': _firstname,
+      'last_name': _lastname,
+      'id_passport': _idnumber,
       'email': _email,
-      'phone1': _phone_no,
+      'phone1': _phoneno,
       'phone2': _phone2,
       'country': _country,
       'town': _county,
-      'sub_county': _sub_county,
+      'sub_county': _subcounty,
       'land_size': _landsize,
       'gender': _gender,
       'crop': cropcheckedValue,
@@ -159,7 +157,7 @@ class _NewFarmerState extends State<NewFarmerPage> {
   _getSubCounties(value) async {
     setState(() {
       sub_counties = List();
-      _sub_county = null;
+      _subcounty = null;
     });
     var res = await CallApi().getData("sub_counties/" + value);
 
@@ -223,7 +221,7 @@ class _NewFarmerState extends State<NewFarmerPage> {
                               }
                             },
                             onSaved: (String value) {
-                              _first_name = value;
+                              _firstname = value;
                             },
                           ),
                         ),
@@ -246,7 +244,7 @@ class _NewFarmerState extends State<NewFarmerPage> {
                               }
                             },
                             onSaved: (String value) {
-                              _last_name = value;
+                              _lastname = value;
                             },
                           ),
                         ),
@@ -269,7 +267,7 @@ class _NewFarmerState extends State<NewFarmerPage> {
                               }
                             },
                             onSaved: (String value) {
-                              _id_number = value;
+                              _idnumber = value;
                             },
                           ),
                         ),
@@ -319,7 +317,7 @@ class _NewFarmerState extends State<NewFarmerPage> {
                               }
                             },
                             onSaved: (String value) {
-                              _phone_no = value;
+                              _phoneno = value;
                             },
                           ),
                         ),
@@ -410,7 +408,7 @@ class _NewFarmerState extends State<NewFarmerPage> {
                       children: <Widget>[
                         Flexible(
                           child: DropdownButtonFormField(
-                            value: _sub_county,
+                            value: _subcounty,
                             validator: (value) =>
                                 value == null ? 'Select Sub County' : null,
                             isExpanded: true,
@@ -424,7 +422,7 @@ class _NewFarmerState extends State<NewFarmerPage> {
                             onChanged: (value) {
                               print(value);
                               setState(() {
-                                _sub_county = value;
+                                _subcounty = value;
                               });
                             },
                             items: sub_counties.map((subcounty) {
