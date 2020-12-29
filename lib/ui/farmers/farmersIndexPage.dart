@@ -102,8 +102,10 @@ class _FarmersIndexState extends State<FarmersIndexPage> {
                     //Icon(Icons.chevron_right), // icon-2
                   ],
                 ),
-                onTap: () => Navigator.of(context).pushNamed('/show_farmer',
-                    arguments: {"farmer_id": "${farmers[position]['id']}"}),
+                onTap: () => Navigator.of(context).pushNamed(
+                  '/show_farmer',
+                  arguments: {"farmer_id": "${farmers[position]['id']}"},
+                ),
               )
             ],
           ),
@@ -112,48 +114,48 @@ class _FarmersIndexState extends State<FarmersIndexPage> {
     );
   }
 
-  Widget _buildTopStrip() {
-    return Container(
-      color: Colors.black,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Row(
-              children: <Widget>[
-                Icon(
-                  Icons.account_circle,
-                  color: Colors.white,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    "Total Registered Farmers",
-                    style: TextStyle(
-                      fontSize: 15.0,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            CircleAvatar(
-              backgroundColor: Colors.blue,
-              radius: 14.0,
-              child: Text(
-                farmers.length.toString(),
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  fontSize: 13.0,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  // Widget _buildTopStrip() {
+  //   return Container(
+  //     color: Colors.black,
+  //     child: Padding(
+  //       padding: const EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
+  //       child: Row(
+  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //         children: <Widget>[
+  //           Row(
+  //             children: <Widget>[
+  //               Icon(
+  //                 Icons.account_circle,
+  //                 color: Colors.white,
+  //               ),
+  //               Padding(
+  //                 padding: const EdgeInsets.all(8.0),
+  //                 child: Text(
+  //                   "Total Registered Farmers",
+  //                   style: TextStyle(
+  //                     fontSize: 15.0,
+  //                     color: Colors.white,
+  //                     fontWeight: FontWeight.bold,
+  //                   ),
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //           CircleAvatar(
+  //             backgroundColor: Colors.blue,
+  //             radius: 14.0,
+  //             child: Text(
+  //               farmers.length.toString(),
+  //               style: TextStyle(
+  //                 fontWeight: FontWeight.bold,
+  //                 color: Colors.white,
+  //                 fontSize: 13.0,
+  //               ),
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 }

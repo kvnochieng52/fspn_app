@@ -4,6 +4,7 @@ import 'package:fspn/ui/farmers/farmerSearchPage.dart';
 import 'package:fspn/ui/farmers/farmerShowPage.dart';
 import 'package:fspn/ui/farmers/farmersIndexPage.dart';
 import 'package:fspn/ui/farmers/newFarmerPage.dart';
+import 'package:fspn/ui/farmers/farmerEditPage.dart';
 import 'package:fspn/ui/groups/groupsIndexPage.dart';
 import 'package:fspn/ui/login.dart';
 import 'package:fspn/ui/dashboard/dashboardPage.dart';
@@ -31,6 +32,14 @@ class RouteGenerator {
         break;
       case '/search_farmer':
         return MaterialPageRoute(builder: (_) => FarmerSearchPage());
+        break;
+
+      case '/edit_farmer':
+        return MaterialPageRoute(
+          builder: (_) => FarmerEditPage(
+            data: args,
+          ),
+        );
         break;
 
       case '/show_farmer':

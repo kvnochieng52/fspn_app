@@ -52,9 +52,7 @@ class LoginState extends State<Login> {
           bool emailValid = RegExp(
                   r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
               .hasMatch(value);
-          if (!emailValid) {
-            return "Enter a Valid Email";
-          }
+          return !emailValid ? "Enter a Valid Email" : null;
         },
         onSaved: (String value) {
           _email = value;
@@ -75,11 +73,7 @@ class LoginState extends State<Login> {
         labelText: 'Password',
         labelStyle: TextStyle(fontSize: 15, color: Colors.white),
       ),
-      validator: (String value) {
-        if (value.isEmpty) {
-          return "Please Enter your Password";
-        }
-      },
+      validator: (value) => value.isEmpty ? 'Please Enter your Password' : null,
       onSaved: (String value) {
         _password = value;
       },

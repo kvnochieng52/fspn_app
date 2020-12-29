@@ -13,7 +13,7 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardState extends State<DashboardPage> {
-  var _currentIndex = 0;
+  //var _currentIndex = 0;
   int _page = 0;
   GlobalKey _bottomNavigationKey = GlobalKey();
 
