@@ -59,103 +59,109 @@ class _FarmersIndexState extends State<FarmersIndexPage> {
   }
 
   Widget _buildFarmersList() {
-    return ListView.builder(
-      shrinkWrap: true,
-      itemCount: farmers.length,
-      padding: const EdgeInsets.all(8.5),
-      itemBuilder: (BuildContext context, int position) {
-        return Card(
-          child: Column(
-            children: <Widget>[
-              Divider(height: 5.5),
-              ListTile(
-                title: Text(
-                  "${farmers[position]['first_name']} ${farmers[position]['last_name']}",
-                  style: TextStyle(fontSize: 15.0),
+    return ListView(
+      children: <Widget>[
+        _buildTopStrip(),
+        ListView.builder(
+          physics: ClampingScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: farmers.length,
+          padding: const EdgeInsets.all(8.5),
+          itemBuilder: (BuildContext context, int position) {
+            return Card(
+              child: Column(
+                children: <Widget>[
+                  Divider(height: 5.5),
+                  ListTile(
+                    title: Text(
+                      "${farmers[position]['first_name']} ${farmers[position]['last_name']}",
+                      style: TextStyle(fontSize: 15.0),
+                    ),
+                    subtitle: Text(
+                        "${farmers[position]['county_name']}, ${farmers[position]['sub_county_name']}",
+                        style: TextStyle(
+                            fontSize: 13.9,
+                            color: Colors.grey,
+                            fontStyle: FontStyle.italic)),
+                    leading: CircleAvatar(
+                      backgroundColor: Theme.of(context).primaryColor,
+                      child: Text(
+                        "${farmers[position]['first_name'][0]}".toUpperCase(),
+                        style: TextStyle(
+                          fontSize: 17.4,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    trailing: Column(
+                      //spacing: 12, // space between two icons
+                      children: <Widget>[
+                        Text(
+                          "${farmers[position]['id']}",
+                          style: TextStyle(
+                              fontSize: 15.0, fontWeight: FontWeight.bold),
+                        ),
+                        Icon(Icons.more_horiz), // icon-1
+                        //Icon(Icons.chevron_right), // icon-2
+                      ],
+                    ),
+                    onTap: () => Navigator.of(context).pushNamed(
+                      '/show_farmer',
+                      arguments: {"farmer_id": "${farmers[position]['id']}"},
+                    ),
+                  )
+                ],
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTopStrip() {
+    return Container(
+      color: Colors.black,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                Icon(
+                  Icons.account_circle,
+                  color: Colors.white,
                 ),
-                subtitle: Text(
-                    "${farmers[position]['county_name']}, ${farmers[position]['sub_county_name']}",
-                    style: TextStyle(
-                        fontSize: 13.9,
-                        color: Colors.grey,
-                        fontStyle: FontStyle.italic)),
-                leading: CircleAvatar(
-                  backgroundColor: Theme.of(context).primaryColor,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    "${farmers[position]['first_name'][0]}".toUpperCase(),
+                    "Total Registered Farmers",
                     style: TextStyle(
-                      fontSize: 17.4,
+                      fontSize: 15.0,
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-                trailing: Column(
-                  //spacing: 12, // space between two icons
-                  children: <Widget>[
-                    Text(
-                      "${farmers[position]['id']}",
-                      style: TextStyle(
-                          fontSize: 15.0, fontWeight: FontWeight.bold),
-                    ),
-                    Icon(Icons.more_horiz), // icon-1
-                    //Icon(Icons.chevron_right), // icon-2
-                  ],
+              ],
+            ),
+            CircleAvatar(
+              backgroundColor: Colors.blue,
+              radius: 13.0,
+              child: Text(
+                farmers.length.toString(),
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  fontSize: 13.0,
                 ),
-                onTap: () => Navigator.of(context).pushNamed(
-                  '/show_farmer',
-                  arguments: {"farmer_id": "${farmers[position]['id']}"},
-                ),
-              )
-            ],
-          ),
-        );
-      },
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
-
-  // Widget _buildTopStrip() {
-  //   return Container(
-  //     color: Colors.black,
-  //     child: Padding(
-  //       padding: const EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
-  //       child: Row(
-  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //         children: <Widget>[
-  //           Row(
-  //             children: <Widget>[
-  //               Icon(
-  //                 Icons.account_circle,
-  //                 color: Colors.white,
-  //               ),
-  //               Padding(
-  //                 padding: const EdgeInsets.all(8.0),
-  //                 child: Text(
-  //                   "Total Registered Farmers",
-  //                   style: TextStyle(
-  //                     fontSize: 15.0,
-  //                     color: Colors.white,
-  //                     fontWeight: FontWeight.bold,
-  //                   ),
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
-  //           CircleAvatar(
-  //             backgroundColor: Colors.blue,
-  //             radius: 14.0,
-  //             child: Text(
-  //               farmers.length.toString(),
-  //               style: TextStyle(
-  //                 fontWeight: FontWeight.bold,
-  //                 color: Colors.white,
-  //                 fontSize: 13.0,
-  //               ),
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
 }

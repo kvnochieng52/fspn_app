@@ -89,6 +89,7 @@ class _DashboardState extends State<DashboardPage> {
   Widget _buildIcons(context) {
     return GridView.builder(
       shrinkWrap: true,
+      physics: ClampingScrollPhysics(),
       itemCount: options.length,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,

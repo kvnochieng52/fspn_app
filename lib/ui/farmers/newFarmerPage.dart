@@ -203,7 +203,7 @@ class _NewFarmerState extends State<NewFarmerPage> {
                                 "Enter the Farmers Details to Register",
                                 style: TextStyle(
                                   fontSize: 17.0,
-                                  fontFamily: 'Montserrat',
+                                  fontFamily: 'SFUIDisplay',
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),

@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       title: Configuration.appName,
       theme: ThemeData(
         primarySwatch: Colors.green,
-        fontFamily: "Montserrat",
+        fontFamily: 'SFUIDisplayMedium',
       ),
       // home: MainPage(),
       debugShowCheckedModeBanner: false,
