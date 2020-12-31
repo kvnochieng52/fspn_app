@@ -271,7 +271,6 @@ class _FarmerEditState extends State<FarmerEditPage> {
                       ),
                     ),
                   ),
-
                   Row(
                     children: <Widget>[
                       Flexible(
@@ -292,7 +291,6 @@ class _FarmerEditState extends State<FarmerEditPage> {
                       ),
                     ],
                   ),
-
                   Row(
                     children: <Widget>[
                       Flexible(
@@ -313,7 +311,6 @@ class _FarmerEditState extends State<FarmerEditPage> {
                       ),
                     ],
                   ),
-
                   Row(
                     children: <Widget>[
                       Flexible(
@@ -334,7 +331,6 @@ class _FarmerEditState extends State<FarmerEditPage> {
                       ),
                     ],
                   ),
-
                   Row(
                     children: <Widget>[
                       Flexible(
@@ -359,7 +355,6 @@ class _FarmerEditState extends State<FarmerEditPage> {
                       ),
                     ],
                   ),
-
                   Row(
                     children: <Widget>[
                       Flexible(
@@ -382,7 +377,6 @@ class _FarmerEditState extends State<FarmerEditPage> {
                       ),
                     ],
                   ),
-
                   Row(
                     children: <Widget>[
                       Flexible(
@@ -401,7 +395,6 @@ class _FarmerEditState extends State<FarmerEditPage> {
                       ),
                     ],
                   ),
-
                   Row(
                     children: <Widget>[
                       Flexible(
@@ -432,7 +425,6 @@ class _FarmerEditState extends State<FarmerEditPage> {
                       ),
                     ],
                   ),
-
                   Row(
                     children: <Widget>[
                       Flexible(
@@ -480,7 +472,6 @@ class _FarmerEditState extends State<FarmerEditPage> {
                             ),
                           ),
                           onChanged: (value) {
-                            print(value);
                             setState(() {
                               _subcounty = value;
                             });
@@ -563,7 +554,6 @@ class _FarmerEditState extends State<FarmerEditPage> {
                       )),
                     ],
                   ),
-
                   Row(
                     children: <Widget>[
                       Flexible(
@@ -620,7 +610,6 @@ class _FarmerEditState extends State<FarmerEditPage> {
                       ),
                     ],
                   ),
-
                   Row(
                     children: <Widget>[
                       Flexible(
@@ -670,19 +659,6 @@ class _FarmerEditState extends State<FarmerEditPage> {
                       ),
                     ),
                   ),
-                  //   "Enter the Farmers Details",
-                  //   style: TextStyle(fontSize: 16.0.0),
-                  // ),
-                  // Row(
-                  //   children: <Widget>[
-                  //     TextFormField(
-                  //       decoration: InputDecoration(
-                  //         labelText: 'First Name',
-                  //         labelStyle: TextStyle(fontSize: 16.0),
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
                 ],
               ),
             ),

@@ -19,6 +19,7 @@ class FarmerShowPage extends StatefulWidget {
 class _FarmerShowState extends State<FarmerShowPage> {
   bool farmerFetched = false;
   var _farmer;
+  List _farmerProduceList = List();
 
   void initState() {
     super.initState();
@@ -34,6 +35,7 @@ class _FarmerShowState extends State<FarmerShowPage> {
     if (body['success']) {
       setState(() {
         _farmer = body['farmer'];
+        _farmerProduceList = body['farmer_produces'];
         farmerFetched = true;
       });
     }
@@ -45,7 +47,7 @@ class _FarmerShowState extends State<FarmerShowPage> {
       appBar: header(context, titleText: 'Farmer Details'),
       drawer: drawer(context),
       backgroundColor: Color(0xFFF0F0F0),
-      body: farmerFetched ? _buildFarmerDetails() : circularProgress(),
+      body: farmerFetched ? _buildFarmerDetails(context) : circularProgress(),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.edit),
         onPressed: farmerFetched
@@ -62,19 +64,19 @@ class _FarmerShowState extends State<FarmerShowPage> {
     );
   }
 
-  Widget _buildFarmerDetails() {
+  Widget _buildFarmerDetails(context) {
     return Container(
       child: ListView(
         children: <Widget>[
           _buildBasicDetails(),
           _buidAdditionalDetails(),
-          _buildFarmProduce(),
+          _buildFarmProduce(context),
         ],
       ),
     );
   }
 
-  Widget _buildFarmProduce() {
+  Widget _buildFarmProduce(context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 2.5),
       child: Card(
@@ -91,13 +93,16 @@ class _FarmerShowState extends State<FarmerShowPage> {
                     textAlign: TextAlign.left,
                   ),
                   RaisedButton.icon(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50),
+                    ),
                     color: Colors.blue,
                     icon: Icon(
                       Icons.add,
                       color: Colors.white,
                     ),
                     label: Text(
-                      "ADD PRODUCE",
+                      "NEW PRODUCE",
                       style: TextStyle(
                         color: Colors.white,
                       ),
@@ -110,8 +115,19 @@ class _FarmerShowState extends State<FarmerShowPage> {
                 ],
               ),
               Padding(
-                padding: EdgeInsets.only(top: 40.0),
-              )
+                padding: EdgeInsets.only(top: 10.0),
+              ),
+              ListView.builder(
+                physics: ClampingScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: _farmerProduceList.length,
+                padding: const EdgeInsets.all(0),
+                itemBuilder: (BuildContext context, int position) {
+                  return Card(
+                    child: Text('Hello'),
+                  );
+                },
+              ),
             ],
           ),
         ),
