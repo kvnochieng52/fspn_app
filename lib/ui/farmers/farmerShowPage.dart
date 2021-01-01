@@ -17,6 +17,8 @@ class FarmerShowPage extends StatefulWidget {
 }
 
 class _FarmerShowState extends State<FarmerShowPage> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   bool farmerFetched = false;
   var _farmer;
   List _farmerProduceList = List();
@@ -41,9 +43,30 @@ class _FarmerShowState extends State<FarmerShowPage> {
     }
   }
 
+  _deleteFarmProduce(produceId) async {
+    var data = {'produce_id': produceId};
+
+    var res = await CallApi().postData(data, 'farmer_produce/delete');
+    var body = json.decode(res.body);
+
+    if (body['success']) {
+      var getProduceRes = await CallApi()
+          .getData('farmer/get_farmer_by_id/' + widget.data['farmer_id']);
+      var getProduceBody = json.decode(getProduceRes.body);
+      setState(() {
+        _farmerProduceList = getProduceBody['farmer_produces'];
+      });
+      Navigator.of(context, rootNavigator: true).pop();
+      _showMsg('Farm Produce Deleted Successfully');
+    } else {
+      // _showMsg(body['message']);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: header(context, titleText: 'Farmer Details'),
       drawer: drawer(context),
       backgroundColor: Color(0xFFF0F0F0),
@@ -81,38 +104,41 @@ class _FarmerShowState extends State<FarmerShowPage> {
       padding: const EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 2.5),
       child: Card(
         child: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(0.0),
           child: Column(
             children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text(
-                    "Farmers Production",
-                    style: TextStyle(fontSize: 18.0),
-                    textAlign: TextAlign.left,
-                  ),
-                  RaisedButton.icon(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 0.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
+                      "Farmers Production",
+                      style: TextStyle(fontSize: 18.0),
+                      textAlign: TextAlign.left,
                     ),
-                    color: Colors.blue,
-                    icon: Icon(
-                      Icons.add,
-                      color: Colors.white,
-                    ),
-                    label: Text(
-                      "NEW PRODUCE",
-                      style: TextStyle(
+                    RaisedButton.icon(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      color: Colors.blue,
+                      icon: Icon(
+                        Icons.add,
                         color: Colors.white,
                       ),
+                      label: Text(
+                        "NEW PRODUCE",
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                      onPressed: () => Navigator.of(context).pushNamed(
+                        '/add_farmer_produce',
+                        arguments: {"farmer_id": "${widget.data['farmer_id']}"},
+                      ),
                     ),
-                    onPressed: () => Navigator.of(context).pushNamed(
-                      '/add_farmer_produce',
-                      arguments: {"farmer_id": "${widget.data['farmer_id']}"},
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               Padding(
                 padding: EdgeInsets.only(top: 10.0),
@@ -121,10 +147,142 @@ class _FarmerShowState extends State<FarmerShowPage> {
                 physics: ClampingScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: _farmerProduceList.length,
-                padding: const EdgeInsets.all(0),
                 itemBuilder: (BuildContext context, int position) {
                   return Card(
-                    child: Text('Hello'),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 15.0, 0, 15.0),
+                      child: ListTile(
+                        // leading: CircleAvatar(
+                        //   radius: 30.0,
+                        //   backgroundImage: NetworkImage(
+                        //       'http://10.0.2.2:8000/images/placeholders/potatoes.jpg'),
+                        //   backgroundColor: Colors.transparent,
+                        // ),
+                        title: Text(
+                          _farmerProduceList[position]
+                                      ['produce_sub_type_name'] !=
+                                  null
+                              ? "${_farmerProduceList[position]['produce_name']} / ${_farmerProduceList[position]['produce_sub_type_name']}"
+                              : "${_farmerProduceList[position]['produce_name']}",
+                          style: TextStyle(fontSize: 16.0),
+                        ),
+                        subtitle: Column(
+                          children: <Widget>[
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: RichText(
+                                text: TextSpan(
+                                  style: TextStyle(
+                                    fontSize: 14.0,
+                                    color: Colors.grey,
+                                  ),
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                      text: 'Capacity :',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    TextSpan(
+                                      text:
+                                          "${_farmerProduceList[position]['capacity']} ${_farmerProduceList[position]['unit_name']}",
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: RichText(
+                                text: TextSpan(
+                                  style: TextStyle(
+                                    fontSize: 14.0,
+                                    color: Colors.grey,
+                                  ),
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                      text: 'Production Area : ',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                        text:
+                                            "${_farmerProduceList[position]['production_area']} Acre"),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: RichText(
+                                text: TextSpan(
+                                  style: TextStyle(
+                                    fontSize: 14.0,
+                                    color: Colors.grey,
+                                  ),
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                      text: 'Notes : ',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: _farmerProduceList[position]
+                                                  ['description'] !=
+                                              null
+                                          ? _farmerProduceList[position]
+                                              ['description']
+                                          : '',
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        // Text('Capacity:40 Bags,Production Area:40 Bags'),
+                        trailing: Column(
+                          //spacing: 12, // space between two icons
+                          children: <Widget>[
+                            IconButton(
+                                icon: Icon(Icons.delete),
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      title: Text('Delete Farmer Produce'),
+                                      content: Text(
+                                          'Are you sure you want to delete?'),
+                                      actions: <Widget>[
+                                        RaisedButton(
+                                          color: Colors.red,
+                                          onPressed: () {
+                                            _deleteFarmProduce(
+                                                _farmerProduceList[position]
+                                                    ['id']);
+                                          },
+                                          child: Text('Delete'),
+                                        ),
+                                        FlatButton(
+                                          onPressed: () {
+                                            Navigator.of(context,
+                                                    rootNavigator: true)
+                                                .pop();
+                                          },
+                                          child: Text('Cancel'),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }),
+                            // icon-1
+                            //Icon(Icons.chevron_right), // icon-2
+                          ],
+                        ),
+                      ),
+                    ),
                   );
                 },
               ),
@@ -140,7 +298,7 @@ class _FarmerShowState extends State<FarmerShowPage> {
       padding: const EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 2.5),
       child: Card(
         child: Padding(
-          padding: const EdgeInsets.all(15),
+          padding: const EdgeInsets.all(20.0),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
@@ -226,26 +384,29 @@ class _FarmerShowState extends State<FarmerShowPage> {
                     ),
                   ),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        Icon(Icons.fingerprint),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            "ID/Passport No.",
-                            style: TextStyle(fontSize: 15.0),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 4.0, 0, 4.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Icon(Icons.fingerprint),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              "ID/Passport No.",
+                              style: TextStyle(fontSize: 15.0),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    Text(
-                      "${_farmer['id_passport']}",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    )
-                  ],
+                        ],
+                      ),
+                      Text(
+                        "${_farmer['id_passport']}",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      )
+                    ],
+                  ),
                 ),
               ),
               Container(
@@ -261,26 +422,39 @@ class _FarmerShowState extends State<FarmerShowPage> {
                     ),
                   ),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        Icon(Icons.settings),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            "Farmer Production",
-                            style: TextStyle(fontSize: 15.0),
-                          ),
-                        ),
-                      ],
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      width: 1.0,
+                      color: Colors.grey.shade300,
                     ),
-                    Text(
-                      "Crop",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    )
-                  ],
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 4.0, 0, 4.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Icon(Icons.phone),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              "Telephone",
+                              style: TextStyle(fontSize: 15.0),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Text(
+                        "${_farmer['phone1']}",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      )
+                    ],
+                  ),
                 ),
               ),
               Container(
@@ -292,26 +466,29 @@ class _FarmerShowState extends State<FarmerShowPage> {
                     ),
                   ),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        Icon(Icons.phone),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            "Telephone",
-                            style: TextStyle(fontSize: 15.0),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 4.0, 0, 4.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Icon(Icons.email),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              "Email",
+                              style: TextStyle(fontSize: 15.0),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    Text(
-                      "${_farmer['phone1']}",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    )
-                  ],
+                        ],
+                      ),
+                      Text(
+                        "${_farmer['email']}",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      )
+                    ],
+                  ),
                 ),
               ),
               Container(
@@ -323,26 +500,29 @@ class _FarmerShowState extends State<FarmerShowPage> {
                     ),
                   ),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        Icon(Icons.email),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            "Email",
-                            style: TextStyle(fontSize: 15.0),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 4.0, 0, 4.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Icon(Icons.person),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              "Gender",
+                              style: TextStyle(fontSize: 15.0),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    Text(
-                      "${_farmer['email']}",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    )
-                  ],
+                        ],
+                      ),
+                      Text(
+                        "${_farmer['gender_name']}",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      )
+                    ],
+                  ),
                 ),
               ),
               Container(
@@ -354,26 +534,29 @@ class _FarmerShowState extends State<FarmerShowPage> {
                     ),
                   ),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        Icon(Icons.person),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            "Gender",
-                            style: TextStyle(fontSize: 15.0),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 4.0, 0, 4.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Icon(Icons.calendar_today),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              "Date Of Birth",
+                              style: TextStyle(fontSize: 15.0),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    Text(
-                      "${_farmer['gender_name']}",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    )
-                  ],
+                        ],
+                      ),
+                      Text(
+                        "${_farmer['date_of_birth']}",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      )
+                    ],
+                  ),
                 ),
               ),
               Container(
@@ -385,57 +568,29 @@ class _FarmerShowState extends State<FarmerShowPage> {
                     ),
                   ),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        Icon(Icons.calendar_today),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            "Date Of Birth",
-                            style: TextStyle(fontSize: 15.0),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 4.0, 0, 4.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Icon(Icons.landscape),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              "Land Size",
+                              style: TextStyle(fontSize: 15.0),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    Text(
-                      "${_farmer['date_of_birth']}",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    )
-                  ],
-                ),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      width: 1.0,
-                      color: Colors.grey.shade300,
-                    ),
+                        ],
+                      ),
+                      Text(
+                        "${_farmer['land_size']} Acres",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      )
+                    ],
                   ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        Icon(Icons.landscape),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            "Land Size",
-                            style: TextStyle(fontSize: 15.0),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Text(
-                      "${_farmer['land_size']} Acres",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    )
-                  ],
                 ),
               ),
             ],
@@ -443,5 +598,20 @@ class _FarmerShowState extends State<FarmerShowPage> {
         ),
       ),
     );
+  }
+
+  _showMsg(msg) {
+    final snackBar = SnackBar(
+      content: Text(
+        msg,
+        style: TextStyle(color: Colors.red),
+      ),
+      backgroundColor: Colors.white,
+      action: SnackBarAction(
+        label: 'Close',
+        onPressed: () {},
+      ),
+    );
+    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 }

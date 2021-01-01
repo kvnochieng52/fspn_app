@@ -7,6 +7,7 @@ import 'package:fspn/ui/farmers/farmersSearchPage.dart';
 import 'package:fspn/ui/farmers/newFarmerPage.dart';
 import 'package:fspn/ui/farmers/farmerEditPage.dart';
 import 'package:fspn/ui/groups/groupsIndexPage.dart';
+import 'package:fspn/ui/groups/groupCreatePage.dart';
 import 'package:fspn/ui/login.dart';
 import 'package:fspn/ui/dashboard/dashboardPage.dart';
 import 'package:fspn/ui/organizations/organizationsIndexPage.dart';
@@ -61,6 +62,9 @@ class RouteGenerator {
 
       case '/groups':
         return MaterialPageRoute(builder: (_) => GroupsIndexPage());
+        break;
+      case '/new_group':
+        return MaterialPageRoute(builder: (_) => GroupCreatePage());
         break;
 
       case '/organizations':
