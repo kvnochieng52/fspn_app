@@ -11,6 +11,7 @@ import 'package:fspn/ui/groups/groupCreatePage.dart';
 import 'package:fspn/ui/groups/groupShowPage.dart';
 import 'package:fspn/ui/groups/groupEditPage.dart';
 import 'package:fspn/ui/groups/groupSearchPage.dart';
+import 'package:fspn/ui/groups/groupAddMembersPage.dart';
 import 'package:fspn/ui/login.dart';
 import 'package:fspn/ui/dashboard/dashboardPage.dart';
 import 'package:fspn/ui/organizations/organizationsIndexPage.dart';
@@ -83,6 +84,14 @@ class RouteGenerator {
       case '/show_group':
         return MaterialPageRoute(
           builder: (_) => GroupShowPage(
+            data: args,
+          ),
+        );
+        break;
+
+      case '/add_member':
+        return MaterialPageRoute(
+          builder: (_) => GroupAddMembersPage(
             data: args,
           ),
         );
