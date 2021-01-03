@@ -111,10 +111,13 @@ class _GroupEditState extends State<GroupEditPage> {
         '/show_group',
         arguments: {"group_id": "${body['group_id']}"},
       );
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
-  Widget _buildAddFarmerProduceForm(context) {
+  Widget _buildGroupEditForm(context) {
     final mediaQuery = MediaQuery.of(context);
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -295,9 +298,8 @@ class _GroupEditState extends State<GroupEditPage> {
         ),
       ),
       // drawer: drawer(context),
-      body: _initDataFetched
-          ? _buildAddFarmerProduceForm(context)
-          : circularProgress(),
+      body:
+          _initDataFetched ? _buildGroupEditForm(context) : circularProgress(),
     );
   }
 }

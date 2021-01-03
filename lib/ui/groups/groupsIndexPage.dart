@@ -78,11 +78,14 @@ class _GroupsIndexState extends State<GroupsIndexPage> {
                               Text(
                                 "Description: ",
                                 style: TextStyle(
-                                    fontSize: 13.9,
-                                    fontWeight: FontWeight.bold),
+                                  fontSize: 13.9,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                               Text(
-                                "${groups[position]['description']}",
+                                groups[position]['description'] != null
+                                    ? "${groups[position]['description']}"
+                                    : '',
                                 style: TextStyle(
                                   fontSize: 13.9,
                                 ),
@@ -119,7 +122,7 @@ class _GroupsIndexState extends State<GroupsIndexPage> {
                             backgroundColor: Colors.blue,
                             radius: 13.0,
                             child: Text(
-                              groups.length.toString(),
+                              "${groups[position]['members_count']}",
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,

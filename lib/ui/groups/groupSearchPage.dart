@@ -134,7 +134,7 @@ class _GroupSearchState extends State<GroupSearchPage> {
                             backgroundColor: Colors.blue,
                             radius: 13.0,
                             child: Text(
-                              groups.length.toString(),
+                              "${groups[position]['members_count']}",
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
