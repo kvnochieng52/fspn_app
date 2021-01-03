@@ -60,6 +60,17 @@ Widget rightButtons(context, titleText) {
       );
       break;
 
+    case 'Groups':
+      return IconButton(
+        icon: Icon(Icons.search),
+        iconSize: 30.0,
+        color: Colors.white,
+        onPressed: () {
+          Navigator.of(context).pushNamed('/search_group');
+        },
+      );
+      break;
+
     default:
       return IconButton(
         icon: Icon(Icons.more_vert),

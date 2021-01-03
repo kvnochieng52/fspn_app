@@ -1,43 +1,58 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:fspn/api/api.dart';
-import 'package:fspn/widgets/drawer.dart';
-import 'package:fspn/widgets/header.dart';
-import 'package:fspn/widgets/progress.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class GroupsIndexPage extends StatefulWidget {
+class GroupSearchPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _GroupsIndexState();
+    return _GroupSearchState();
   }
 }
 
-class _GroupsIndexState extends State<GroupsIndexPage> {
-  List groups = List();
-  bool groupsFetched = false;
+class _GroupSearchState extends State<GroupSearchPage> {
+  bool _searchFlag = false;
+  TextEditingController searchController = TextEditingController();
 
   @override
-  void initState() {
-    super.initState();
-    _getGroups();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: buildSearchField(),
+      body: _searchFlag ? _buildGroupList() : buildNoContent(),
+    );
   }
 
-  _getGroups() async {
-    SharedPreferences localStorage = await SharedPreferences.getInstance();
-    var user = json.decode(localStorage.getString('user'));
-
-    var res =
-        await CallApi().getData('group/get_groups/' + user['id'].toString());
-    groups = json.decode(res.body);
+  _clearSearch() {
     setState(() {
-      groups = json.decode(res.body);
-      groupsFetched = true;
+      searchController.clear();
+      _searchFlag = false;
     });
   }
 
-  Widget _buildGroupsList() {
+  handleSearch(text) {
+    _getFarmers();
+    setState(() {
+      _searchFlag = true;
+    });
+
+    //print(searchResults.length);
+  }
+
+  var groups = List();
+
+  _getFarmers() async {
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+    var user = json.decode(localStorage.getString('user'));
+
+    var res = await CallApi().getData(
+        "group/search_groups/${user['id'].toString()}/${searchController.text}");
+
+    setState(() {
+      groups = json.decode(res.body);
+    });
+  }
+
+  Widget _buildGroupList() {
     return ListView(
       children: <Widget>[
         _buildTopStrip(),
@@ -131,6 +146,11 @@ class _GroupsIndexState extends State<GroupsIndexPage> {
                         //Icon(Icons.chevron_right), // icon-2
                       ],
                     ),
+                    // onTap: () => Navigator.of(context).pushNamed(
+                    //   '/show_group',
+                    //   arguments: {"group_id": "${groups[position]['id']}"},
+                    // ),
+
                     onTap: () => Navigator.of(context).pushNamed(
                       '/show_group',
                       arguments: {"group_id": "${groups[position]['id']}"},
@@ -162,7 +182,7 @@ class _GroupsIndexState extends State<GroupsIndexPage> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    "Total Registered Groups",
+                    "Groups Found..",
                     style: TextStyle(
                       fontSize: 15.0,
                       color: Colors.white,
@@ -190,17 +210,59 @@ class _GroupsIndexState extends State<GroupsIndexPage> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: header(context, titleText: 'Groups'),
-      drawer: drawer(context),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () => Navigator.of(context).pushNamed('/new_group'),
+  Container buildNoContent() {
+    final Orientation orientation = MediaQuery.of(context).orientation;
+    return Container(
+      child: Center(
+        child: ListView(
+          children: <Widget>[
+            Image.asset(
+              'images/logo_colored.png',
+              height: orientation == Orientation.portrait ? 250 : 100.0,
+              width: orientation == Orientation.portrait ? 250 : 100.0,
+            ),
+            Text(
+              "Find Groups",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.green,
+                //fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w600,
+                fontSize: orientation == Orientation.portrait ? 20.0 : 20.0,
+              ),
+            ),
+          ],
+        ),
       ),
-      body: Container(
-        child: groupsFetched ? _buildGroupsList() : circularProgress(),
+    );
+  }
+
+  AppBar buildSearchField() {
+    return AppBar(
+      backgroundColor: Theme.of(context).primaryColor,
+      title: TextFormField(
+        autofocus: true,
+        style: TextStyle(color: Colors.black, fontSize: 16.0),
+        controller: searchController,
+        decoration: InputDecoration(
+          hintText: "Search for Groups...",
+          fillColor: Colors.white,
+          filled: true,
+          prefixIcon: Icon(
+            Icons.supervised_user_circle,
+            size: 24.0,
+          ),
+          suffixIcon: IconButton(
+            icon: Icon(Icons.clear),
+            onPressed: _clearSearch,
+          ),
+        ),
+        onFieldSubmitted: handleSearch,
+        onChanged: (text) {
+          if (text.length >= 3) {
+            handleSearch(text);
+          }
+        },
       ),
     );
   }

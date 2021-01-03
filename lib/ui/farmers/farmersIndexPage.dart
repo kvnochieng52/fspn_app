@@ -148,7 +148,7 @@ class _FarmersIndexState extends State<FarmersIndexPage> {
               ],
             ),
             CircleAvatar(
-              backgroundColor: Colors.blue,
+              backgroundColor: Colors.green,
               radius: 13.0,
               child: Text(
                 farmers.length.toString(),

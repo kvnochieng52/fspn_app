@@ -3,18 +3,20 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fspn/api/api.dart';
 import 'package:fspn/ui/loading.dart';
-import 'package:fspn/widgets/drawer.dart';
 import 'package:fspn/widgets/progress.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class GroupCreatePage extends StatefulWidget {
+class GroupEditPage extends StatefulWidget {
+  final data;
+  const GroupEditPage({Key key, @required this.data}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() {
-    return _GroupCreateState();
+    return _GroupEditState();
   }
 }
 
-class _GroupCreateState extends State<GroupCreatePage> {
+class _GroupEditState extends State<GroupEditPage> {
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -30,19 +32,36 @@ class _GroupCreateState extends State<GroupCreatePage> {
   List _counties = List();
   List _subcounties = List();
 
+  var _group;
+
   void initState() {
     super.initState();
     _getInitData();
   }
 
   _getInitData() async {
-    var res = await CallApi().getData('group/init_data/');
+    var res = await CallApi()
+        .getData('group/init_edit_data/' + widget.data['group_id']);
 
     var body = json.decode(res.body);
 
     if (body['success']) {
       setState(() {
         _counties = body['counties'];
+        _group = body['group'];
+
+        _groupNameController.text = _group['group_name'];
+        _county = _group['county'];
+
+        _subcounties = [
+          {
+            "id": _group['sub_county'],
+            "sub_county_name": _group['sub_county_name']
+          }
+        ];
+        _subCounty = _group['sub_county'];
+        _descriptionController.text = _group['description'];
+
         _initDataFetched = true;
       });
     }
@@ -61,7 +80,7 @@ class _GroupCreateState extends State<GroupCreatePage> {
     });
   }
 
-  _addGroup() async {
+  _updateGroup() async {
     if (!_formkey.currentState.validate()) {
       return;
     }
@@ -71,10 +90,11 @@ class _GroupCreateState extends State<GroupCreatePage> {
       _isLoading = true;
     });
 
-    Loading().loader(context, "Creating Group...Please wait");
+    Loading().loader(context, "Updating Group...Please wait");
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     var user = json.decode(localStorage.getString('user'));
     var data = {
+      'group_id': widget.data['group_id'],
       'group_name': _groupNameController.text,
       'county': _county,
       'sub_county': _subCounty,
@@ -82,7 +102,7 @@ class _GroupCreateState extends State<GroupCreatePage> {
       'created_by': user['id'],
     };
 
-    var res = await CallApi().postData(data, 'group/add');
+    var res = await CallApi().postData(data, 'group/update');
     var body = json.decode(res.body);
 
     if (body['success']) {
@@ -234,10 +254,10 @@ class _GroupCreateState extends State<GroupCreatePage> {
                 Padding(
                   padding: EdgeInsets.only(top: 20),
                   child: MaterialButton(
-                    onPressed: _isLoading ? null : _addGroup,
+                    onPressed: _isLoading ? null : _updateGroup,
                     disabledColor: Colors.lightGreen,
                     child: Text(
-                      'SUBMIT',
+                      'UPDATE',
                       style: TextStyle(
                         fontSize: 14.0,
                         color: Colors.white,
@@ -268,7 +288,7 @@ class _GroupCreateState extends State<GroupCreatePage> {
       key: _scaffoldKey,
       appBar: AppBar(
         title: Text(
-          'Add New Group',
+          'Edit Group',
           style: TextStyle(
             fontSize: 16.0,
           ),

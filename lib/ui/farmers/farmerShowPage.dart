@@ -206,8 +206,9 @@ class _FarmerShowState extends State<FarmerShowPage> {
                                       ),
                                     ),
                                     TextSpan(
-                                        text:
-                                            "${_farmerProduceList[position]['production_area']} Acre"),
+                                      text:
+                                          "${_farmerProduceList[position]['production_area']} Acre",
+                                    ),
                                   ],
                                 ),
                               ),
