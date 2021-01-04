@@ -119,7 +119,7 @@ class _GroupsIndexState extends State<GroupsIndexPage> {
                         Padding(
                           padding: const EdgeInsets.only(top: 8.0),
                           child: CircleAvatar(
-                            backgroundColor: Colors.blue,
+                            backgroundColor: Colors.green,
                             radius: 13.0,
                             child: Text(
                               "${groups[position]['members_count']}",

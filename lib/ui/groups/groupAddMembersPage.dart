@@ -18,9 +18,14 @@ class GroupAddMembersPage extends StatefulWidget {
 
 class _GroupAddMembersState extends State<GroupAddMembersPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   bool _groupDetailsFetched = false;
   var _group;
+
   List farmers = List();
+  List _groupMembersArray = List();
+
+  TextEditingController searchController = TextEditingController();
 
   _getGroupDetails() async {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
@@ -35,19 +40,63 @@ class _GroupAddMembersState extends State<GroupAddMembersPage> {
       setState(() {
         _group = body['group'];
         farmers = body['farmers'];
+        _groupMembersArray = body['group_members_array'];
         _groupDetailsFetched = true;
       });
     }
-  }
-
-  _addMemberToGroup(farmerID) {
-    Loading().loader(context, "Adding Member...Please wait");
   }
 
   @override
   void initState() {
     super.initState();
     _getGroupDetails();
+  }
+
+  _addMemberToGroup(farmerID) async {
+    Loading().loader(context, "Adding Member...Please wait");
+
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+    var user = json.decode(localStorage.getString('user'));
+    var data = {
+      'group_id': widget.data['group_id'],
+      'farmer_id': farmerID,
+      'created_by': user['id'],
+    };
+
+    var res = await CallApi().postData(data, 'group/add_farmer_to_group');
+    var body = json.decode(res.body);
+
+    if (body['success']) {
+      _groupMembersArray = body['group_members_array'];
+      Navigator.pop(context);
+      Navigator.of(context).pushNamed(
+        '/show_group',
+        arguments: {"group_id": "${body['group_id']}"},
+      );
+    }
+  }
+
+  _clearSearch() {
+    setState(() {
+      searchController.clear();
+      _getGroupDetails();
+    });
+  }
+
+  handleSearch(text) {
+    _getFarmers();
+  }
+
+  _getFarmers() async {
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+    var user = json.decode(localStorage.getString('user'));
+
+    var res = await CallApi().getData(
+        "farmer/search_farmers/${user['id'].toString()}/${searchController.text}");
+
+    setState(() {
+      farmers = json.decode(res.body);
+    });
   }
 
   _buildGroupFarmersList(context) {
@@ -65,16 +114,28 @@ class _GroupAddMembersState extends State<GroupAddMembersPage> {
                 children: <Widget>[
                   Divider(height: 5.5),
                   ListTile(
-                    title: Text(
-                      "${farmers[position]['first_name']} ${farmers[position]['last_name']}",
-                      style: TextStyle(fontSize: 15.0),
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text(
+                          "${farmers[position]['first_name']} ${farmers[position]['last_name']}",
+                          style: TextStyle(fontSize: 15.0),
+                        ),
+                        Text(
+                          "${farmers[position]['id']}",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                            fontSize: 13.0,
+                          ),
+                        ),
+                      ],
                     ),
                     subtitle: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Column(
                           children: <Widget>[
-                            //Text("Account No: ${farmers[position]['id']}"),
                             Align(
                               alignment: Alignment.centerLeft,
                               child: Text(
@@ -89,23 +150,31 @@ class _GroupAddMembersState extends State<GroupAddMembersPage> {
                           ],
                         ),
 
-                        FlatButton(
-                          child: Row(
-                            children: <Widget>[
-                              Icon(
-                                Icons.check,
-                                color: Colors.green,
-                              ),
-                              Text(
-                                ' Add',
-                                style: TextStyle(color: Colors.green),
-                              ),
-                            ],
-                          ),
-                          onPressed: () {
-                            _addMemberToGroup(farmers[position]['id']);
-                          },
-                        )
+                        _groupMembersArray.contains(farmers[position]['id'])
+                            ? FlatButton(
+                                child: Text(
+                                  "Added",
+                                  style: TextStyle(color: Colors.grey),
+                                ),
+                                onPressed: () => {},
+                              )
+                            : FlatButton(
+                                child: Row(
+                                  children: <Widget>[
+                                    Icon(
+                                      Icons.check,
+                                      color: Colors.green,
+                                    ),
+                                    Text(
+                                      ' Add',
+                                      style: TextStyle(color: Colors.green),
+                                    ),
+                                  ],
+                                ),
+                                onPressed: () {
+                                  _addMemberToGroup(farmers[position]['id']);
+                                },
+                              )
                         // IconButton(
                         //   onPressed: () {},
                         //   icon: Icon(Icons.check_box),
@@ -136,10 +205,7 @@ class _GroupAddMembersState extends State<GroupAddMembersPage> {
                     //     //Icon(Icons.chevron_right), // icon-2
                     //   ],
                     // ),
-                    onTap: () => Navigator.of(context).pushNamed(
-                      '/show_farmer',
-                      arguments: {"farmer_id": "${farmers[position]['id']}"},
-                    ),
+                    onTap: () => {},
                   )
                 ],
               ),
@@ -151,7 +217,30 @@ class _GroupAddMembersState extends State<GroupAddMembersPage> {
   }
 
   Widget _buildSearchField() {
-    return Text("Serach Field");
+    return TextFormField(
+      // autofocus: true,
+      style: TextStyle(color: Colors.black, fontSize: 16.0),
+      controller: searchController,
+      decoration: InputDecoration(
+        hintText: "Search for Farmer...",
+        fillColor: Colors.white,
+        filled: true,
+        prefixIcon: Icon(
+          Icons.account_circle,
+          size: 24.0,
+        ),
+        suffixIcon: IconButton(
+          icon: Icon(Icons.clear),
+          onPressed: _clearSearch,
+        ),
+      ),
+      onFieldSubmitted: handleSearch,
+      onChanged: (text) {
+        if (text.length >= 3) {
+          handleSearch(text);
+        }
+      },
+    );
   }
 
   @override

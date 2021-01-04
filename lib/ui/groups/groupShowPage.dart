@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fspn/api/api.dart';
+import 'package:fspn/ui/loading.dart';
 import 'package:fspn/widgets/progress.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -20,6 +21,7 @@ class _GroupShowState extends State<GroupShowPage> {
   var _group;
   List _groupMembers = List();
   bool _groupDetailsFetched = false;
+  int _groupLeader;
 
   _getGroupDetails() async {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
@@ -34,16 +36,17 @@ class _GroupShowState extends State<GroupShowPage> {
       setState(() {
         _group = body['group'];
         _groupMembers = body['group_members'];
+        _groupLeader = body['group_leader'] != null
+            ? body['group_leader']['farmer_id']
+            : null;
         _groupDetailsFetched = true;
       });
+
+      print("INit Group leader $_groupLeader");
     }
   }
 
   _removeMember(memberID, groupID) async {
-    setState(() {
-      //_groupDetailsFetched = false;
-    });
-
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     var user = json.decode(localStorage.getString('user'));
     var res = await CallApi().getData(
@@ -55,9 +58,36 @@ class _GroupShowState extends State<GroupShowPage> {
       setState(() {
         //_group = body['group'];
         _groupMembers = body['group_members'];
-        Navigator.of(context, rootNavigator: true).pop();
-        _showMsg('Member Removed from the group');
+        _groupLeader = body['group_leader'] != null
+            ? body['group_leader']['farmer_id']
+            : null;
       });
+
+      Navigator.of(context, rootNavigator: true).pop();
+      _showMsg('Member Removed from the group');
+    }
+  }
+
+  _makeGroupLeader(farmerID) async {
+    Loading().loader(context, "Making Member leader...Please wait");
+
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+    var user = json.decode(localStorage.getString('user'));
+    var data = {
+      'group_id': widget.data['group_id'],
+      'farmer_id': farmerID,
+      'created_by': user['id'],
+    };
+
+    var res = await CallApi().postData(data, 'group/make_leader');
+    var body = json.decode(res.body);
+
+    if (body['success']) {
+      setState(() {
+        _groupLeader = farmerID;
+      });
+
+      Navigator.pop(context);
     }
   }
 
@@ -205,6 +235,59 @@ class _GroupShowState extends State<GroupShowPage> {
     );
   }
 
+  _removeLeader(memberID, context) async {
+    Loading().loader(context, "Removing Member leadership...");
+
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+    var user = json.decode(localStorage.getString('user'));
+    var data = {
+      'group_id': widget.data['group_id'],
+      'farmer_id': memberID,
+      'created_by': user['id'],
+    };
+
+    var res = await CallApi().postData(data, 'group/remove_leader');
+    var body = json.decode(res.body);
+
+    if (body['success']) {
+      setState(() {
+        _groupLeader = null;
+      });
+
+      Navigator.pop(context);
+    }
+  }
+
+  // ignore: missing_return
+  Widget _groupLeaderActions(memberID, context) {
+    if (memberID == _groupLeader) {
+      return Row(
+        children: <Widget>[
+          Icon(Icons.star, size: 18.0, color: Colors.orange),
+          Text(
+            "Group Leader",
+            style: TextStyle(
+              color: Colors.orange,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: InkWell(
+              child: Icon(
+                Icons.close,
+                size: 20.0,
+                color: Colors.red,
+              ),
+              onTap: () {
+                _removeLeader(memberID, context);
+              },
+            ),
+          ),
+        ],
+      );
+    }
+  }
+
   Widget _buildDescription(context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(5.0, 8.0, 5.0, 2.5),
@@ -245,9 +328,12 @@ class _GroupShowState extends State<GroupShowPage> {
                     children: <Widget>[
                       Divider(height: 5.5),
                       ListTile(
-                        title: Text(
-                          "${_groupMembers[position]['first_name']} ${_groupMembers[position]['last_name']}",
-                          style: TextStyle(fontSize: 15.0),
+                        title: Padding(
+                          padding: const EdgeInsets.only(bottom: 5.0),
+                          child: Text(
+                            "${_groupMembers[position]['first_name']} ${_groupMembers[position]['last_name']}",
+                            style: TextStyle(fontSize: 15.0),
+                          ),
                         ),
                         subtitle: Column(
                           children: <Widget>[
@@ -262,11 +348,35 @@ class _GroupShowState extends State<GroupShowPage> {
                                 ),
                               ),
                             ),
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                "Account No: ${_groupMembers[position]['id']}",
+                            Padding(
+                              padding: const EdgeInsets.only(top: 5.0),
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  "Account No: ${_groupMembers[position]['id']}",
+                                ),
                               ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 10.0, bottom: 10.0),
+                              child: _groupLeader == null
+                                  ? Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: InkWell(
+                                        child: Text(
+                                          "Make Group Leader",
+                                          style: TextStyle(
+                                            color: Colors.green,
+                                            fontSize: 14.9,
+                                          ),
+                                        ),
+                                        onTap: () => _makeGroupLeader(
+                                            _groupMembers[position]['id']),
+                                      ),
+                                    )
+                                  : _groupLeaderActions(
+                                      _groupMembers[position]['id'], context),
                             ),
                           ],
                         ),
@@ -327,12 +437,7 @@ class _GroupShowState extends State<GroupShowPage> {
                             //Icon(Icons.chevron_right), // icon-2
                           ],
                         ),
-                        onTap: () => Navigator.of(context).pushNamed(
-                          '/show_farmer',
-                          arguments: {
-                            "farmer_id": "${_groupMembers[position]['id']}"
-                          },
-                        ),
+                        onTap: () => {},
                       )
                     ],
                   ),
