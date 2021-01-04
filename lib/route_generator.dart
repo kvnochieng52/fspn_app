@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fspn/ui/farm_inputs/farmInputsIndexPage.dart';
+import 'package:fspn/ui/farm_inputs/farmInputnewPage.dart';
+import 'package:fspn/ui/farm_inputs/farmInputShowPage.dart';
 import 'package:fspn/ui/farmers/farmerAddProducePage.dart';
 import 'package:fspn/ui/farmers/farmerShowPage.dart';
 import 'package:fspn/ui/farmers/farmersIndexPage.dart';
@@ -103,6 +105,17 @@ class RouteGenerator {
 
       case '/farm_inputs':
         return MaterialPageRoute(builder: (_) => FarmInputsIndexPage());
+        break;
+
+      case '/new_farm_input':
+        return MaterialPageRoute(builder: (_) => FarmInputNewPage());
+        break;
+      case '/farm_input_show':
+        return MaterialPageRoute(
+          builder: (_) => FarmerInputShowPage(
+            data: args,
+          ),
+        );
         break;
 
       case '/profile':
