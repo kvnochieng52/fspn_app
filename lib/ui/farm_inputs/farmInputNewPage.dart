@@ -56,7 +56,7 @@ class _FarmInputNewState extends State<FarmInputNewPage> {
   }
 
   _continueFarmInput() async {
-    Loading().loader(context, "Searching Farmer...Please wait");
+    Loading().loader(context, "Loading... Please wait");
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     var user = json.decode(localStorage.getString('user'));
     var data = {
@@ -71,7 +71,9 @@ class _FarmInputNewState extends State<FarmInputNewPage> {
       Navigator.pop(context);
       Navigator.of(context).pushNamed(
         '/farm_input_show',
-        arguments: {"farmer_input_id": "${_farmer['id']}"},
+        arguments: {
+          "farmer_input_id": "${body['farmer_input_id']}",
+        },
       );
     }
   }

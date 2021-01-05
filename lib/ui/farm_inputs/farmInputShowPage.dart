@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:fspn/api/api.dart';
 import 'package:fspn/widgets/drawer.dart';
 import 'package:fspn/widgets/progress.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class FarmerInputShowPage extends StatefulWidget {
   final data;
@@ -16,9 +15,9 @@ class FarmerInputShowPage extends StatefulWidget {
 }
 
 class _FarmerInputShowState extends State<FarmerInputShowPage> {
-  final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _initDataFetched = false;
+
   var _farmer;
   List _currentInputItems = List();
 
@@ -29,9 +28,6 @@ class _FarmerInputShowState extends State<FarmerInputShowPage> {
   }
 
   _getFarmerDetails() async {
-    SharedPreferences localStorage = await SharedPreferences.getInstance();
-    var user = json.decode(localStorage.getString('user'));
-
     var res = await CallApi().getData(
         "farm_input/get_init_details?farm_input_id=${widget.data['farmer_input_id']}");
     var body = json.decode(res.body);
@@ -43,6 +39,26 @@ class _FarmerInputShowState extends State<FarmerInputShowPage> {
         _initDataFetched = true;
       });
     }
+  }
+
+  _deleteFarmInputItem(inputItem) async {
+    var data = {
+      'farm_input_item_id': inputItem,
+      'farm_input_id': widget.data['farmer_input_id'],
+    };
+    var res =
+        await CallApi().postData(data, 'farm_input/delete_farm_input_item');
+    var body = json.decode(res.body);
+
+    if (body['success']) {
+      setState(() {
+        _currentInputItems = body['current_farmer_inputs_items'];
+      });
+      _showMsg('Farm Input Item Deleted Successfully');
+    } else {
+      _showMsg('Someting went wrong... Please try later.');
+    }
+    Navigator.of(context, rootNavigator: true).pop();
   }
 
   Widget _buildFarmInputView(context) {
@@ -226,7 +242,142 @@ class _FarmerInputShowState extends State<FarmerInputShowPage> {
       child: Card(
         child: Padding(
           padding: const EdgeInsets.all(15.0),
-          child: Text("Details"),
+          child: Column(
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    "Farm Inputs",
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  RaisedButton(
+                    onPressed: () {
+                      Navigator.of(context).pushNamed(
+                        '/farm_input_item_add',
+                        arguments: {
+                          "farmer_input_id": widget.data['farmer_input_id']
+                        },
+                      );
+                    },
+                    child: Text(
+                      "Add Farm Input Item",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    color: Colors.green,
+                  ),
+                ],
+              ),
+              ListView.builder(
+                physics: ClampingScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: _currentInputItems.length,
+                itemBuilder: (BuildContext context, int position) {
+                  return Padding(
+                    padding: const EdgeInsets.only(
+                      top: 5.0,
+                      bottom: 5.0,
+                    ),
+                    child: Card(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 5.0, 0, 5.0),
+                        child: ListTile(
+                          title: Padding(
+                            padding: const EdgeInsets.only(bottom: 8.0),
+                            child: Text(
+                              _currentInputItems[position]['sub_input_name'] !=
+                                      null
+                                  ? "${_currentInputItems[position]['input_name']} / ${_currentInputItems[position]['sub_input_name']}"
+                                  : "${_currentInputItems[position]['input_name']}",
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          subtitle: Column(
+                            children: <Widget>[
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  _currentInputItems[position]['unit_name'] !=
+                                          null
+                                      ? "Quantity :${_currentInputItems[position]['quantity']} ${_currentInputItems[position]['unit_name']}"
+                                      : "Quantity :${_currentInputItems[position]['quantity']}",
+                                  style: TextStyle(
+                                    fontSize: 16.0,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    _currentInputItems[position]
+                                                ['farm_input_desc'] !=
+                                            null
+                                        ? _currentInputItems[position]
+                                            ['farm_input_desc']
+                                        : '',
+                                    style: TextStyle(
+                                      fontSize: 16.0,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          trailing: Column(
+                            children: <Widget>[
+                              IconButton(
+                                icon: Icon(Icons.close),
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      title: Text('Delete Farm Input Item'),
+                                      content: Text(
+                                          'Are you sure you want to delete?'),
+                                      actions: <Widget>[
+                                        RaisedButton(
+                                          color: Colors.red,
+                                          onPressed: () {
+                                            _deleteFarmInputItem(
+                                                _currentInputItems[position]
+                                                    ['farmer_input_item_id']);
+                                          },
+                                          child: Text('Delete'),
+                                        ),
+                                        FlatButton(
+                                          onPressed: () {
+                                            Navigator.of(context,
+                                                    rootNavigator: true)
+                                                .pop();
+                                          },
+                                          child: Text('Cancel'),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -244,9 +395,24 @@ class _FarmerInputShowState extends State<FarmerInputShowPage> {
           ),
         ),
       ),
-      //drawer: drawer(context),
+      drawer: drawer(context),
       body:
           _initDataFetched ? _buildFarmInputView(context) : circularProgress(),
     );
+  }
+
+  _showMsg(msg) {
+    final snackBar = SnackBar(
+      content: Text(
+        msg,
+        style: TextStyle(color: Colors.red),
+      ),
+      backgroundColor: Colors.white,
+      action: SnackBarAction(
+        label: 'Close',
+        onPressed: () {},
+      ),
+    );
+    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 }

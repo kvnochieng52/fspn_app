@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fspn/ui/farm_inputs/farmInputsIndexPage.dart';
 import 'package:fspn/ui/farm_inputs/farmInputnewPage.dart';
+import 'package:fspn/ui/farm_inputs/farmInputItemAddPage.dart';
 import 'package:fspn/ui/farm_inputs/farmInputShowPage.dart';
 import 'package:fspn/ui/farmers/farmerAddProducePage.dart';
 import 'package:fspn/ui/farmers/farmerShowPage.dart';
@@ -16,6 +17,7 @@ import 'package:fspn/ui/groups/groupSearchPage.dart';
 import 'package:fspn/ui/groups/groupAddMembersPage.dart';
 import 'package:fspn/ui/login.dart';
 import 'package:fspn/ui/dashboard/dashboardPage.dart';
+import 'package:fspn/ui/logout/logoutPage.dart';
 import 'package:fspn/ui/organizations/organizationsIndexPage.dart';
 import 'package:fspn/ui/profile/ProfilePage.dart';
 
@@ -118,8 +120,20 @@ class RouteGenerator {
         );
         break;
 
+      case '/farm_input_item_add':
+        return MaterialPageRoute(
+          builder: (_) => FarmInputItemAddPage(
+            data: args,
+          ),
+        );
+        break;
+
       case '/profile':
         return MaterialPageRoute(builder: (_) => ProfilePage());
+        break;
+
+      case '/logout':
+        return MaterialPageRoute(builder: (_) => LogOutPage());
         break;
 
       default:

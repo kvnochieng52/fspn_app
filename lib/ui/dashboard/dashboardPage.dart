@@ -1,7 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:fspn/api/api.dart';
 import 'package:fspn/widgets/bottomNavigation.dart';
 import 'package:fspn/widgets/drawer.dart';
 import 'package:fspn/widgets/header.dart';
+import 'package:fspn/widgets/progress.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 //import 'homePage.dart';
 
@@ -16,6 +21,11 @@ class _DashboardState extends State<DashboardPage> {
   //var _currentIndex = 0;
   int _page = 0;
   GlobalKey _bottomNavigationKey = GlobalKey();
+
+  var _farmerCount = 0;
+  var _groupCount = 0;
+  var _orgCount = 0;
+  bool _statsFetched = false;
 
   var options = [
     [
@@ -49,6 +59,33 @@ class _DashboardState extends State<DashboardPage> {
       "/logout",
     ],
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _getStats();
+  }
+
+  _getStats() async {
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+    var user = json.decode(localStorage.getString('user'));
+
+    var res = await CallApi()
+        .getData('dashboard_stats?user_id=' + user['id'].toString());
+
+    var body = json.decode(res.body);
+
+    print(body);
+
+    if (body['success']) {
+      setState(() {
+        _farmerCount = body['farmers_count'];
+        _groupCount = body['group_count'];
+        _orgCount = body['org_count'];
+        _statsFetched = true;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -135,25 +172,29 @@ class _DashboardState extends State<DashboardPage> {
       child: ListView(
         children: <Widget>[
           _buildIcons(context),
-          Padding(padding: EdgeInsets.only(top: 70.0)),
-          Card(
-            color: Colors.green,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(0, 15.0, 0, 15.0),
-              child: Column(
-                children: <Widget>[
-                  Row(
-                    //mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      _buidStatsOptions("Farmers", 100),
-                      _buidStatsOptions("Groups", 500),
-                      _buidStatsOptions("Organizations", 80),
-                    ],
-                  ),
-                ],
-              ),
-            ),
+          Padding(
+            padding: EdgeInsets.only(top: 70.0),
+            child: _statsFetched
+                ? Card(
+                    color: Colors.green,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 15.0, 0, 15.0),
+                      child: Column(
+                        children: <Widget>[
+                          Row(
+                            //mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+                              _buidStatsOptions("Farmers", _farmerCount),
+                              _buidStatsOptions("Groups", _groupCount),
+                              _buidStatsOptions("Organizations", _orgCount),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                : circularProgress(),
           ),
         ],
       ),
