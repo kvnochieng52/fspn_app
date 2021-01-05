@@ -60,7 +60,7 @@ class _FarmInputNewState extends State<FarmInputNewPage> {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     var user = json.decode(localStorage.getString('user'));
     var data = {
-      'farmer_id': _farmer['farmer_id'],
+      'farmer_id': _farmer['id'],
       'created_by': user['id'],
     };
 
@@ -71,7 +71,7 @@ class _FarmInputNewState extends State<FarmInputNewPage> {
       Navigator.pop(context);
       Navigator.of(context).pushNamed(
         '/farm_input_show',
-        arguments: {"farmer_input_id": "${body['farmer_input_id']}"},
+        arguments: {"farmer_input_id": "${_farmer['id']}"},
       );
     }
   }
