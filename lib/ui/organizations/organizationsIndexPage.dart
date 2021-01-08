@@ -193,10 +193,10 @@ class _OrganizationsIndexState extends State<OrganizationsIndexPage> {
     return Scaffold(
       appBar: header(context, titleText: 'Organizations'),
       drawer: drawer(context),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () => Navigator.of(context).pushNamed('/new_organization'),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   child: Icon(Icons.add),
+      //   onPressed: () => Navigator.of(context).pushNamed('/new_organization'),
+      // ),
       body: Container(
         child: organizationsFetched
             ? _buildOrganizationList()
