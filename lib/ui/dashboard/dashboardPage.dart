@@ -99,7 +99,7 @@ class _DashboardState extends State<DashboardPage> {
       drawer: drawer(context),
       backgroundColor: Color(0xFFF0F0F0),
       body: _buildBodyptions(context),
-      bottomNavigationBar: navigationBar(_bottomNavigationKey, _page),
+      bottomNavigationBar: navigationBar(_bottomNavigationKey, _page, context),
     );
   }
 
@@ -129,6 +129,7 @@ class _DashboardState extends State<DashboardPage> {
   }
 
   Widget _buildIcons(context) {
+    final Orientation orientation = MediaQuery.of(context).orientation;
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: GridView.builder(
@@ -137,8 +138,11 @@ class _DashboardState extends State<DashboardPage> {
         itemCount: options.length,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 3,
-            childAspectRatio: MediaQuery.of(context).size.width /
-                (MediaQuery.of(context).size.height / 1.7)),
+            childAspectRatio: orientation == Orientation.portrait
+                ? MediaQuery.of(context).size.width /
+                    (MediaQuery.of(context).size.height / 1.8)
+                : MediaQuery.of(context).size.width /
+                    (MediaQuery.of(context).size.height / 1.1)),
         itemBuilder: (BuildContext context, int index) {
           return InkWell(
             onTap: () => Navigator.of(context).pushNamed(options[index][2]),
@@ -146,7 +150,7 @@ class _DashboardState extends State<DashboardPage> {
               child: Column(
                 children: <Widget>[
                   SizedBox(
-                    height: 10,
+                    height: 20,
                   ),
                   Image.asset(
                     options[index][1],
@@ -158,7 +162,7 @@ class _DashboardState extends State<DashboardPage> {
                     child: Text(
                       options[index][0].toUpperCase(),
                       style: TextStyle(
-                          fontSize: 10,
+                          fontSize: 14,
                           fontFamily: 'Montserrat',
                           height: 1.2,
                           fontWeight: FontWeight.w600),
