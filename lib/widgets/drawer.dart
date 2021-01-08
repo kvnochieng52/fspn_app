@@ -60,14 +60,14 @@ Drawer drawer(context) {
             () => Navigator.of(context).pushNamed('/groups'),
           ),
           _customListTyle(
-            Icons.store,
-            'Organizations',
-            () => Navigator.of(context).pushNamed('/organizations'),
-          ),
-          _customListTyle(
             Icons.notifications,
             'Farm Inputs',
             () => Navigator.of(context).pushNamed('/farm_inputs'),
+          ),
+          _customListTyle(
+            Icons.store,
+            'Organizations',
+            () => Navigator.of(context).pushNamed('/organizations'),
           ),
           _customListTyle(
             Icons.settings,

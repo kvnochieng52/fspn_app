@@ -26,6 +26,8 @@ class _DashboardState extends State<DashboardPage> {
   var _groupCount = 0;
   var _orgCount = 0;
   bool _statsFetched = false;
+  var _user;
+  var _userFetched = false;
 
   var options = [
     [
@@ -75,7 +77,10 @@ class _DashboardState extends State<DashboardPage> {
 
     var body = json.decode(res.body);
 
-    print(body);
+    setState(() {
+      _user = json.decode(localStorage.getString('user'));
+      _userFetched = true;
+    });
 
     if (body['success']) {
       setState(() {
@@ -124,79 +129,117 @@ class _DashboardState extends State<DashboardPage> {
   }
 
   Widget _buildIcons(context) {
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: ClampingScrollPhysics(),
-      itemCount: options.length,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          childAspectRatio: MediaQuery.of(context).size.width /
-              (MediaQuery.of(context).size.height / 1.7)),
-      itemBuilder: (BuildContext context, int index) {
-        return InkWell(
-          onTap: () => Navigator.of(context).pushNamed(options[index][2]),
-          child: Card(
-            child: Column(
-              children: <Widget>[
-                SizedBox(
-                  height: 10,
-                ),
-                Image.asset(
-                  options[index][1],
-                  height: 50,
-                  width: 50,
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 8.0),
-                  child: Text(
-                    options[index][0].toUpperCase(),
-                    style: TextStyle(
-                        fontSize: 10,
-                        fontFamily: 'Montserrat',
-                        height: 1.2,
-                        fontWeight: FontWeight.w600),
-                    textAlign: TextAlign.center,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: GridView.builder(
+        shrinkWrap: true,
+        physics: ClampingScrollPhysics(),
+        itemCount: options.length,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            childAspectRatio: MediaQuery.of(context).size.width /
+                (MediaQuery.of(context).size.height / 1.7)),
+        itemBuilder: (BuildContext context, int index) {
+          return InkWell(
+            onTap: () => Navigator.of(context).pushNamed(options[index][2]),
+            child: Card(
+              child: Column(
+                children: <Widget>[
+                  SizedBox(
+                    height: 10,
                   ),
-                )
-              ],
+                  Image.asset(
+                    options[index][1],
+                    height: 50,
+                    width: 50,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 8.0),
+                    child: Text(
+                      options[index][0].toUpperCase(),
+                      style: TextStyle(
+                          fontSize: 10,
+                          fontFamily: 'Montserrat',
+                          height: 1.2,
+                          fontWeight: FontWeight.w600),
+                      textAlign: TextAlign.center,
+                    ),
+                  )
+                ],
+              ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 
   Widget _buildBodyptions(context) {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(15.0, 20.0, 15.0, 15.0),
-      child: ListView(
-        children: <Widget>[
-          _buildIcons(context),
-          Padding(
-            padding: EdgeInsets.only(top: 70.0),
-            child: _statsFetched
-                ? Card(
-                    color: Colors.green,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 15.0, 0, 15.0),
-                      child: Column(
-                        children: <Widget>[
-                          Row(
-                            //mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: <Widget>[
-                              _buidStatsOptions("Farmers", _farmerCount),
-                              _buidStatsOptions("Groups", _groupCount),
-                              _buidStatsOptions("Organizations", _orgCount),
-                            ],
-                          ),
-                        ],
-                      ),
+    return
+        // padding: EdgeInsets.fromLTRB(15.0, 20.0, 15.0, 15.0),
+        ListView(
+      children: <Widget>[
+        _buildTopStrip(),
+        _buildIcons(context),
+        Padding(
+          padding: EdgeInsets.fromLTRB(5.0, 70.0, 5.0, 5.0),
+          child: _statsFetched
+              ? Card(
+                  color: Colors.green,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 15.0, 0, 15.0),
+                    child: Column(
+                      children: <Widget>[
+                        Row(
+                          //mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            _buidStatsOptions("Farmers", _farmerCount),
+                            _buidStatsOptions("Groups", _groupCount),
+                            _buidStatsOptions("Organizations", _orgCount),
+                          ],
+                        ),
+                      ],
                     ),
-                  )
-                : circularProgress(),
-          ),
-        ],
+                  ),
+                )
+              : circularProgress(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTopStrip() {
+    return Container(
+      color: Colors.black,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    _userFetched
+                        ? "Welcome Back ${_user['name']}."
+                        : "Loading your Details...",
+                    style: TextStyle(
+                      fontSize: 15.0,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Icon(
+              Icons.verified_user,
+              color: Colors.white,
+            ),
+          ],
+        ),
       ),
     );
   }

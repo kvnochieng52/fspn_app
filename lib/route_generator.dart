@@ -19,6 +19,8 @@ import 'package:fspn/ui/login.dart';
 import 'package:fspn/ui/dashboard/dashboardPage.dart';
 import 'package:fspn/ui/logout/logoutPage.dart';
 import 'package:fspn/ui/organizations/organizationsIndexPage.dart';
+import 'package:fspn/ui/organizations/organizationCreatePage.dart';
+import 'package:fspn/ui/organizations/organizationShowPage.dart';
 import 'package:fspn/ui/profile/ProfilePage.dart';
 
 class RouteGenerator {
@@ -103,6 +105,18 @@ class RouteGenerator {
 
       case '/organizations':
         return MaterialPageRoute(builder: (_) => OrganizationsIndexPage());
+        break;
+
+      case '/new_organization':
+        return MaterialPageRoute(builder: (_) => OrganizationCreatePage());
+        break;
+
+      case '/show_organization':
+        return MaterialPageRoute(
+          builder: (_) => OrganizationShowPage(
+            data: args,
+          ),
+        );
         break;
 
       case '/farm_inputs':
