@@ -23,9 +23,10 @@ import 'package:fspn/ui/organizations/organizationCreatePage.dart';
 import 'package:fspn/ui/organizations/organizationShowPage.dart';
 import 'package:fspn/ui/profile/ProfilePage.dart';
 
-class RouteGenerator {
+class RouteGenerator extends StatelessWidget {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     final args = settings.arguments;
+
     switch (settings.name) {
       case '/':
         return MaterialPageRoute(builder: (_) => Login());
@@ -166,5 +167,11 @@ class RouteGenerator {
         ),
       );
     });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    throw UnimplementedError();
   }
 }

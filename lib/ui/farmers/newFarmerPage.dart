@@ -421,7 +421,6 @@ class _NewFarmerState extends State<NewFarmerPage> {
                                     ),
                                   ),
                                   onChanged: (value) {
-                                    print(value);
                                     setState(() {
                                       _subcounty = value;
                                     });
@@ -482,8 +481,6 @@ class _NewFarmerState extends State<NewFarmerPage> {
                                   setState(() {
                                     cropcheckedValue = newValue;
                                   });
-
-                                  print(cropcheckedValue);
                                 },
                                 controlAffinity: ListTileControlAffinity
                                     .leading, //  <-- leading Checkbox

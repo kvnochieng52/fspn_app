@@ -20,8 +20,6 @@ CurvedNavigationBar navigationBar(_bottomNavigationKey, _page, context) {
       animationDuration: Duration(milliseconds: 600),
       onTap: (index) {
         _page = index;
-
-        print(index);
         switch (index) {
           case 0:
             Navigator.of(context).pushNamed('/farmers');

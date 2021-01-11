@@ -34,8 +34,6 @@ class _FarmerSearchState extends State<FarmerSearchPage> {
     setState(() {
       _searchFlag = true;
     });
-
-    //print(searchResults.length);
   }
 
   var farmers = List();

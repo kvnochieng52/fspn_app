@@ -35,7 +35,6 @@ class _GroupSearchState extends State<GroupSearchPage> {
       _searchFlag = true;
     });
 
-    //print(searchResults.length);
   }
 
   var groups = List();

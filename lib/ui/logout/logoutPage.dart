@@ -42,11 +42,11 @@ class _LogOutState extends State<LogOutPage> {
     //var res = await CallApi().getData('logout');
     //var body = json.decode(res.body);
 
-    // print(body);
     // if (body['success']) {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     localStorage.remove('user');
     localStorage.remove('token');
+    Navigator.pop(context);
     Navigator.of(context).pushNamed('/');
     // Navigator.pop(context);
     // }

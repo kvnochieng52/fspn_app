@@ -22,6 +22,7 @@ class _GroupShowState extends State<GroupShowPage> {
   List _groupMembers = List();
   bool _groupDetailsFetched = false;
   int _groupLeader;
+  var refreshKey = GlobalKey<RefreshIndicatorState>();
 
   _getGroupDetails() async {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
@@ -41,9 +42,15 @@ class _GroupShowState extends State<GroupShowPage> {
             : null;
         _groupDetailsFetched = true;
       });
-
-      print("INit Group leader $_groupLeader");
     }
+  }
+
+  Future<Null> refreshList() async {
+    refreshKey.currentState?.show(atTop: false);
+    await Future.delayed(Duration(seconds: 3));
+    _getGroupDetails();
+
+    return null;
   }
 
   _removeMember(memberID, groupID) async {
@@ -479,9 +486,13 @@ class _GroupShowState extends State<GroupShowPage> {
           ),
         ),
       ),
-      body: _groupDetailsFetched
-          ? _buildGroupDetails(context)
-          : circularProgress(),
+      body: RefreshIndicator(
+        key: refreshKey,
+        child: _groupDetailsFetched
+            ? _buildGroupDetails(context)
+            : circularProgress(),
+        onRefresh: refreshList,
+      ),
       floatingActionButton: FloatingActionButton.extended(
         icon: Icon(Icons.add),
         label: Text("Add Members"),

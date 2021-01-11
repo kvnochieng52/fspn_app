@@ -22,6 +22,7 @@ class _FarmerShowState extends State<FarmerShowPage> {
   bool farmerFetched = false;
   var _farmer;
   List _farmerProduceList = List();
+  var refreshKey = GlobalKey<RefreshIndicatorState>();
 
   void initState() {
     super.initState();
@@ -63,6 +64,14 @@ class _FarmerShowState extends State<FarmerShowPage> {
     }
   }
 
+  Future<Null> refreshList() async {
+    refreshKey.currentState?.show(atTop: false);
+    await Future.delayed(Duration(seconds: 3));
+    _getFarmer();
+
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,7 +79,12 @@ class _FarmerShowState extends State<FarmerShowPage> {
       appBar: header(context, titleText: 'Farmer Details'),
       drawer: drawer(context),
       backgroundColor: Color(0xFFF0F0F0),
-      body: farmerFetched ? _buildFarmerDetails(context) : circularProgress(),
+      body: RefreshIndicator(
+        key: refreshKey,
+        child:
+            farmerFetched ? _buildFarmerDetails(context) : circularProgress(),
+        onRefresh: refreshList,
+      ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.edit),
         onPressed: farmerFetched
@@ -78,12 +92,6 @@ class _FarmerShowState extends State<FarmerShowPage> {
                 arguments: {"farmer_id": "${widget.data['farmer_id']}"})
             : null,
       ),
-
-      // floatingActionButton: FloatingActionButton.extended(
-      //   icon: Icon(Icons.add),
-      //   label: Text("New Farmer"),
-      //   onPressed: () => print('hello'),
-      // ),
     );
   }
 

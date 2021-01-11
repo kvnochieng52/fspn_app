@@ -17,6 +17,7 @@ class GroupsIndexPage extends StatefulWidget {
 class _GroupsIndexState extends State<GroupsIndexPage> {
   List groups = List();
   bool groupsFetched = false;
+  var refreshKey = GlobalKey<RefreshIndicatorState>();
 
   @override
   void initState() {
@@ -193,6 +194,14 @@ class _GroupsIndexState extends State<GroupsIndexPage> {
     );
   }
 
+  Future<Null> refreshList() async {
+    refreshKey.currentState?.show(atTop: false);
+    await Future.delayed(Duration(seconds: 3));
+    _getGroups();
+
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -202,8 +211,12 @@ class _GroupsIndexState extends State<GroupsIndexPage> {
         child: Icon(Icons.add),
         onPressed: () => Navigator.of(context).pushNamed('/new_group'),
       ),
-      body: Container(
-        child: groupsFetched ? _buildGroupsList() : circularProgress(),
+      body: RefreshIndicator(
+        key: refreshKey,
+        child: Container(
+          child: groupsFetched ? _buildGroupsList() : circularProgress(),
+        ),
+        onRefresh: refreshList,
       ),
     );
   }
