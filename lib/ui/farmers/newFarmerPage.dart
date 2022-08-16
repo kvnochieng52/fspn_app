@@ -281,14 +281,14 @@ class _NewFarmerState extends State<NewFarmerPage> {
                                     isDense: true,
                                     contentPadding: EdgeInsets.all(5),
                                   ),
-                                  validator: (String value) {
-                                    bool emailValid = RegExp(
-                                            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                                        .hasMatch(value);
-                                    return !emailValid
-                                        ? "Enter a Valid Email"
-                                        : null;
-                                  },
+                                  // validator: (String value) {
+                                  //   bool emailValid = RegExp(
+                                  //           r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                  //       .hasMatch(value);
+                                  //   return !emailValid
+                                  //       ? "Enter a Valid Email"
+                                  //       : null;
+                                  // },
                                   onSaved: (String value) {
                                     _email = value;
                                   },

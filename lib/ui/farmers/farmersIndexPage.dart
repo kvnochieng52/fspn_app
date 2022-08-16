@@ -39,7 +39,7 @@ class _FarmersIndexState extends State<FarmersIndexPage> {
   }
 
   Future<Null> refreshList() async {
-    refreshKey.currentState?.show(atTop: false);
+    refreshKey.currentState?.show(atTop: tr);
     await Future.delayed(Duration(seconds: 3));
     _getFarmers();
 

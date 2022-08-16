@@ -24,6 +24,10 @@ import 'package:fspn/ui/organizations/organizationShowPage.dart';
 import 'package:fspn/ui/profile/ProfilePage.dart';
 
 class RouteGenerator extends StatelessWidget {
+  static Route<dynamic> unAuthed(RouteSettings settings) {
+    return MaterialPageRoute(builder: (_) => Login());
+  }
+
   static Route<dynamic> generateRoute(RouteSettings settings) {
     final args = settings.arguments;
 
